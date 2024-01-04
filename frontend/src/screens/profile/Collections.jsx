@@ -3,19 +3,14 @@ import { Table, Form, Button, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { FaTimes } from "react-icons/fa";
-import { FaUser, FaHeart } from "react-icons/fa";
-import { FaCircleUser } from "react-icons/fa6";
-import { IoIosFolderOpen } from "react-icons/io";
 import { toast } from "react-toastify";
+import { PiFoldersFill } from "react-icons/pi";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import { useProfileMutation } from "../../slices/usersApiSlice";
-//import { useGetMyOrdersQuery } from "../../slices/ordersApiSlice";
+import { useGetMyCollectionsQuery } from "../../slices/collectionsApiSlice";
 import { setCredentials } from "../../slices/authSlice";
-import StyledButton from "../../components/Button";
 import "./ProfileScreen.css";
-import ExamCard from "../../components/ExamCard"
 import "../exams/ExamsSCreen.css";
 
 const ProfileScreen = () => {
@@ -27,8 +22,6 @@ const ProfileScreen = () => {
 
   const { userInfoMediquest } = useSelector((state) => state.auth);
 
-  //const { data: orders, isLoading, error } = useGetMyOrdersQuery();
-
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
 
@@ -37,6 +30,8 @@ const ProfileScreen = () => {
     setEmail(userInfoMediquest.email);
   }, [userInfoMediquest.email, userInfoMediquest.name]);
 
+  const { data, isLoading, error } = useGetMyCollectionsQuery();
+  console.log(data);
   const dispatch = useDispatch();
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -59,26 +54,36 @@ const ProfileScreen = () => {
 
   return (
     <>
-      
-      <Row className="exams-row">
-       
-       <Col
-         className="content-side"
-         style={{ backgroundColor: "#161616" }}
-         md={9}
-       >
-         <Row className="p-3 mt-3">
-           <Col><strong>Collections</strong></Col>
-           
-         </Row>
-         <Row className="m-2">
-           <Col sm={12} md={6} lg={4} xl={3}>
-            <ExamCard />
-           </Col>
-         </Row>
-       </Col>
-     </Row>
-     
+      <Row className="exams-row" style={{}}>
+        <Col
+          className="content-side"
+          style={{ backgroundColor: "#161616" }}
+          md={9}
+        >
+          <Row className="p-3 mt-3">
+            <Col>
+              <h2>Collections</h2>
+            </Col>
+          </Row>
+          <Row className="m-2 mx-5">
+            {data?.map((collection) => (
+              <Col md={4}>
+               
+                <div className="collection-card mx-3">
+                <LinkContainer to={`/collection/${collection._id}`} style={{cursor:"pointer"}}>
+                  <PiFoldersFill size={170} />
+                  </LinkContainer>
+                  <h6>{collection.title}</h6>
+
+                  <Col>Created At</Col>
+                  <Col>{collection.createdAt.substring(0, 10)}</Col>
+                </div>
+                
+              </Col>
+            ))}
+          </Row>
+        </Col>
+      </Row>
     </>
   );
 };

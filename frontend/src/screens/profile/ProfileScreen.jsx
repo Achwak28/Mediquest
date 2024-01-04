@@ -84,7 +84,7 @@ const ProfileScreen = () => {
   return (
     <>
       <Row className="profile-row">
-        <Col className="profile-sidebar p-5" md={3}>
+        <Col className="profile-sidebar p-5" md={3} style={{height:"90vh"}}>
           <Link
             to="/profile/userinfo"
             className="mt-5"

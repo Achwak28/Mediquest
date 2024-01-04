@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import path from "path";
 //import products from './data/products.js'
 import cookieParser from 'cookie-parser'
-import productRoutes from './routes/productRoutes.js'
+import collectionRoutes from './routes/collectionRoutes.js'
 import docRoutes from './routes/docRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import orderRoutes from "./routes/orderRoutes.js"
@@ -28,10 +28,9 @@ app.use(express.urlencoded({ extended : true}))
 app.use(cookieParser())
 
  
-app.use('/api/products', productRoutes)
 app.use('/api/documents', docRoutes)
 app.use('/api/users', userRoutes)
-app.use('/api/orders', orderRoutes) 
+app.use('/api/collections', collectionRoutes) 
 app.use('/api/upload', uploadRoutes)  
 
 app.get('/api/config/paypal', (req,res) =>  res.send({ clientId: process.env.PAYPAL_CLIENT_ID}))
