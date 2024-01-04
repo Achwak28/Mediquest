@@ -1,0 +1,38 @@
+.exams-row{
+    
+    color: white;
+}
+.exams-row Col{
+    height: 100%;
+}
+.exams-row .card{
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    padding: 0;
+    background-color: #0d0d0d;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none !important;
+    margin: 2rem;
+}
+.exams-row .card strong{
+    color: white !important;
+
+}
+.exams-row .card a{
+    text-decoration: none;
+}
+.likes{
+    display: flex;
+    /*justify-content: end;*/
+    padding-bottom: 0.3rem;
+    padding-top: 0.5rem;
+}
+
+.exams-row .product-image{
+    width: 100% !important ;
+    height: 150px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}

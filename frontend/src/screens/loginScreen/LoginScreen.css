@@ -1,0 +1,30 @@
+.login-container {
+  overflow: hidden !important;
+}
+.login-container .login-content {
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+}
+.login-container .login-bg {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-image: url("../../assets/login_bg.png");
+  height: 91vh;
+  overflow: hidden;
+}
+.login-container .login-content .inputs {
+  background-color: black;
+  border: 1px solid white;
+  color: white;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+.inputs::placeholder {
+  color: white;
+  opacity: 0.9;
+}
+
+.white {
+  color: white;
+}

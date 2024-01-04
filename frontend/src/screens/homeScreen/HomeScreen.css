@@ -1,0 +1,29 @@
+.home-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-image: url("../../assets/homepage_bg.png");
+  height: 91vh;
+  overflow-x: hidden;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-container .home-content{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+   text-align: start;
+   
+}
+
+.home-container .start-btn{
+    padding: 1rem 3rem;
+    color: black;
+    background-color: #75dab4;
+    border-radius: 5px;
+    font-weight: bolder;
+    font-size: 1rem;
+    border: transparent;
+}

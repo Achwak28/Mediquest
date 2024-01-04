@@ -1,0 +1,27 @@
+.profile-row{
+    color: white;
+}
+.profile-row .profile-sidebar{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding-top: 20rem;
+    color: white;
+}
+.profile-row .profile-sidebar a,
+.profile-row .profile-sidebar Link{
+    text-decoration: none !important;
+    color: white !important;
+   
+    
+}
+.profile-image .content-side{
+    height: 90vh;
+}
+.profile-row .content-side .profile-image{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}

@@ -1,0 +1,34 @@
+.register-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-image: url("../../assets/register_bg.png");
+  height: 91vh;
+}
+.register-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  padding-top: 5rem;
+}
+.register-container .register-content {
+  background-color: black;
+  border-radius: 4px;
+  height: 70%;
+}
+.register-container .inputs {
+  background-color: black;
+  border: 1px solid white;
+  color: white;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+.register-container .inputs::placeholder {
+  color: white;
+  opacity: 0.9;
+}
+
+.white {
+  color: white;
+}

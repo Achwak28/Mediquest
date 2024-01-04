@@ -1,0 +1,99 @@
+body{
+  background-color: #0d0d0d;
+  
+}
+main {
+  min-height: 80vh;
+  overflow: hidden;
+}
+ 
+.rating span {
+  margin: 0.1rem;
+}
+
+.rating svg {
+  color: #f8e825;
+}
+
+.rating-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding-left: 0.5rem;
+}
+
+.product-title {
+  height: 2.5em; /* Set a fixed height */
+  overflow: hidden; /* Hide overflow content */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+  white-space: nowrap; /* Prevent wrapping */
+}
+.product-image {
+ height:203 !important ;
+ width: 255 !important;
+}
+
+table td,
+table th {
+  text-align: center;
+}
+
+.review {
+  margin-top: 30px;
+}
+
+.review h2 {
+  font-size: 24px;
+  background: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.review button {
+  margin-top: 10px;
+}
+
+.carousel-caption {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.logo{
+  font-weight: bolder !important;
+}
+.logo span{
+  font-style: italic;
+    margin-right: 3px;
+    margin-left: 2px;
+    color: #ffffff;
+    font-size: xx-large;
+}
+
+button.btn-block.btn.btn-primary {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+/*button.btn-block.btn.btn-primary:hover {
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}*/
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #f5a201;
+  --bs-btn-border-color: #f5a201;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #0B1E33;
+  --bs-btn-hover-border-color: #0B1E33;
+  --bs-btn-focus-shadow-rgb: 89, 103, 117;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #303d4a;
+  --bs-btn-active-border-color: #2d3946;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #3c4c5d;
+  --bs-btn-disabled-border-color: #3c4c5d;
+}
+.form-check-input:checked {
+  background-color: #75D4B4;
+  border-color: #75D4B4;
+}
