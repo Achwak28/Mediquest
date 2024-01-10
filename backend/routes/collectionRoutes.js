@@ -7,6 +7,8 @@ import {
   updateCollectionTitle,
   getCollections,
   changeCollectionTitle,
+  addMoreDocs,
+  deleteDocfromCollection,
 } from "../controllers/collectionController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
@@ -23,5 +25,13 @@ router
   .put(protect, updateCollectionTitle)
   .delete(protect, deleteCollection);
 router.route("/:id/title").put(protect, changeCollectionTitle);
+
+router
+  .route("/:id/add")
+  .post(protect, addMoreDocs)
+
+  router
+  .route("/:id/delete")
+  .delete(protect, deleteDocfromCollection)
 
 export default router;

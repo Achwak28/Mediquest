@@ -9,7 +9,8 @@ import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import {
   useProfileMutation,
-  useFavListMutation,
+  useGetFavListQuery,
+  useGetUserProfileQuery,
 } from "../../slices/usersApiSlice";
 import { useGetDocumentsQuery } from "../../slices/documentApiSlice";
 import StyledButton from "../../components/Button";
@@ -19,31 +20,26 @@ import "../exams/ExamsSCreen.css";
 
 const ProfileScreen = () => {
   const { userInfoMediquest } = useSelector((state) => state.auth);
-  const [favList, setFavList] = useState(userInfoMediquest.favourites);
+  //const [favList, setFavList] = useState(userInfoMediquest.favourites);
 
   const { pageNumber, keyword } = useParams();
-  const { data, isLoading, isError } = useGetDocumentsQuery({
+  const { data: userProfile, isLoadingUserProfile } = useGetUserProfileQuery();
+
+  const { data: documents, isLoading, isError } = useGetDocumentsQuery({
     keyword,
     pageNumber,
   });
 
-  const { favList: favouriteListe, error } = useFavListMutation();
+  //const { data: favourites, error, isLoading: loandingFav } = useGetFavListQuery();
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
 
-  useEffect(() => {
-    console.log(updateProfile);
-    favouriteListe({})
-  }, []);
 
-  //const dispatch = useDispatch();
+
 
   return (
     <>
-      {isLoading ? (
-        <Loader />
-      ) : (
         <Row className="exams-row">
           <Col
             className="content-side"
@@ -53,21 +49,28 @@ const ProfileScreen = () => {
             <Row className="p-3 mt-3">
               <Col>
                 <strong>Favourites</strong>
+              
               </Col>
-            </Row>
-            <Row className="m-2">
-              {/*  <ExamCard /> */}
-              {data?.documents
-                .filter((document) => userInfoMediquest.favourites.includes(document.id))
-                .map((document) => (
-                  <Col key={document._id} sm={12} md={4} lg={5} xl={3}>
+            </Row> 
+
+            
+          
+              {isLoadingUserProfile ? (
+                <Loader/> 
+              ) : (
+                <Row className="p-1 m-2 justify-content-center">
+                {userProfile?.favourites.map((document) => (
+                  <Col key={document._id} >
                     <ExamCard document={document} className="m-3" />
                   </Col>
                 ))}
-            </Row>
+                 </Row>
+              )}
+              
+           
           </Col>
         </Row>
-      )}
+ 
     </>
   );
 };

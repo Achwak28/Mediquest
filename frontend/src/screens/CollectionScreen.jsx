@@ -20,6 +20,7 @@ import {
   useGetCollectionDetailsQuery,
   useDeleteCollectionMutation,
   useUpdateCollectionMutation,
+  useDeleteDocFromCollectionMutation,
 } from "../slices/collectionsApiSlice";
 
 const OrderScreen = () => {
@@ -37,6 +38,8 @@ const OrderScreen = () => {
 
   const [deleteCollection, { isLoading: loadingDelete }] =
     useDeleteCollectionMutation();
+
+    const [deleteDocFromCollection] = useDeleteDocFromCollectionMutation();
 
   const [updateCollection, { isLoading: loadingUpdate }] =
     useUpdateCollectionMutation();
@@ -57,6 +60,21 @@ const OrderScreen = () => {
       }
     }
   };
+
+  const deleteDocumentHandler = async (documentId) => {
+    if (window.confirm("Are you sure")) {
+      try {
+        await deleteDocFromCollection({
+          collectionId: collectionId,
+          document: documentId,
+        }).unwrap();;
+        toast.success("document deleted")
+        refetch()
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
+  }
 
   const editCollectionName = async (e) => {
     e.preventDefault();
@@ -91,7 +109,7 @@ const OrderScreen = () => {
             onClick={() => setShowInput(!showInput)}
           >
             <FaEdit color="white" size={22} />
-          </Button>
+          </Button> 
 
           <Button
             variant="danger"
@@ -186,10 +204,10 @@ const OrderScreen = () => {
                           <Col md={5} className="mt-4">
                             <Link to={`/document/${item.document}`}>
                               {item.name}
-                            </Link>
+                            </Link> 
                           </Col>
                           <Col md={2} className="mt-3">
-                            <Button type="button" variant="light">
+                            <Button type="button" variant="light" onClick={() => deleteDocumentHandler(item.document)}>
                               <FaTrash />
                             </Button>
                           </Col>

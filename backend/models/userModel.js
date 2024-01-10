@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import Document from "./docModel.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -16,22 +17,48 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image:{ 
+    image: {
       type: String,
-      required:true
-  },
-  favourites: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Document",
+      required: true,
     },
-  ],
+    favourites: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        image: {
+          type: String,
+          required: true,
+        },
+        rating: {
+          type: Number,
+          required: true,
+          default: 0,
+        },
+        numReviews: {
+          type: Number,
+          required: true,
+          default: 0,
+        },
+        numLikes: {
+          type: Number,
+          required: true,
+          default: 0,
+        },
+        
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: "Document",
+        },
+      },
+    ],
     isAdmin: {
       type: Boolean,
       required: true,
       default: false,
     },
-    
   },
   {
     timestamps: true,
@@ -55,3 +82,11 @@ userSchema.pre("save", async function (next) {
 const User = mongoose.model("User", userSchema);
 
 export default User;
+
+/*
+ {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Document",
+    },
+  ],
+*/

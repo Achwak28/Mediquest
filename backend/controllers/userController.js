@@ -84,14 +84,15 @@ const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    res.json({
+   /* res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       image: user.image,
       favourites: user.favourites,
       isAdmin: user.isAdmin,
-    });
+    });*/
+    res.status(200).json(user)
   } else {
     res.status(404);
     throw new Error("User not found");
@@ -104,7 +105,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
-  if (user) { 
+  if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
     user.image = req.body.image || user.image;
@@ -129,7 +130,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-const toFav = asyncHandler(async (req, res) => {
+const toFav1 = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { documentId } = req.body;
   console.log(documentId);
@@ -168,7 +169,7 @@ const toFav = asyncHandler(async (req, res) => {
         email: user.email,
         image: user.image,
         favourites: user.favourites,
-        isAdmin: user.isAdmin, 
+        isAdmin: user.isAdmin,
       });
     }
   } catch (err) {
@@ -176,15 +177,93 @@ const toFav = asyncHandler(async (req, res) => {
   }
 });
 
+// description add and remove documents from favourite's list
+//route POST /api/users/toFav
+//access private
+const toFav = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const {
+    _id: documentId,
+    name,
+    image,
+    rating,
+    numReviews,
+    numLikes,
+  } = req.body;
+
+  const document = await Document.findById({ _id: documentId });
+  const user = await User.findById(_id);
+
+  if (user) {
+    if (document) {
+      const alreadyAdded = await User.findOne({
+        _id,
+      }).select({ favourites: { $elemMatch: { _id: documentId } } });
+
+      if (alreadyAdded.favourites.length !== 0) {
+        document.numLikes = Number(document.numLikes - 1);
+
+        await document.save();
+
+        const dislikedDocument = {
+          name: alreadyAdded.favourites[0].name,
+          image: alreadyAdded.favourites[0].image,
+          _id: documentId,
+          rating: alreadyAdded.favourites[0].rating,
+          numReviews: alreadyAdded.favourites[0].numReviews,
+          numLikes: document.numLikes,
+        };
+
+        user.favourites.pull(dislikedDocument);
+ 
+        await user.save();  
+
+       const likes= document.numLikes;
+
+        res.status(200).json({ message: "Document Removed", user, likes });
+      } else {
+        document.numLikes = Number(document.numLikes + 1);
+
+        await document.save();
+ 
+        const likedDocument = {
+          name,
+          image,
+          rating,
+          numReviews,
+          numLikes: document.numLikes,
+          _id: documentId,
+        };
+
+        user.favourites.push(likedDocument);
+        await user.save();
+
+        const likes= document.numLikes;
+
+        res.status(201).json({ message: "Document added", user, likes});
+      }
+    } else {
+      res.status(404);
+      throw new Error("Document Not Found");
+    }
+  } else {
+    res.status(400);
+    throw new Error("something went wrong");
+  }
+});
+
 const getAllFavorites = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  try {
-    const user = await User.findById(_id);
-    const { favourites } = user;
-    const favouritesList = user.favourites;
-    res.status(200).send(favourites);
-  } catch (err) {
+  const user = await User.findById(_id);
+
+  if(user){
+  const favouritesList = user.favourites;
+    res.status(200).send(favouritesList);
+
+  }else{
+    res.status(404).send({message: "User Not found"})
     throw new Error(err.message);
+    
   }
 });
 

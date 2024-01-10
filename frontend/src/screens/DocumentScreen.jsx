@@ -22,8 +22,11 @@ import {
   useGetDocumentDetailsQuery,
   useCreateReviewMutation,
 } from "../slices/documentApiSlice";
-import { useCreateCollectionMutation } from "../slices/collectionsApiSlice";
-import { useGetMyCollectionsQuery } from "../slices/collectionsApiSlice";
+import {
+  useCreateCollectionMutation,
+  useAddMoreDocsMutation,
+  useGetMyCollectionsQuery,
+} from "../slices/collectionsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Meta from "../components/Meta";
@@ -36,6 +39,9 @@ const DocumentScreen = () => {
 
   const [createCollection, { isLoading: loandingCollectionCreation, error }] =
     useCreateCollectionMutation();
+
+  const [addMoreDocs, { isLoading: loandingAddingToCollection, errorAdd }] =
+    useAddMoreDocsMutation();
 
   const navigate = useNavigate();
 
@@ -75,10 +81,20 @@ const DocumentScreen = () => {
     }
   };
 
-  const addToCollectionHandler = () => {
-    console.log("add to collection");
+  const addToCollectionHandler = async (id) => {
+    try {
+      await addMoreDocs({
+        collectionId: id,
+        _id: documentId,
+        name: document.name,
+        image: document.image,
+      }).unwrap();
+      navigate(`/collection/${id}`);
+      toast.success("Added to collection successfully");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
   };
-
   const addToNewCollectionHandler = async () => {
     try {
       const res = await createCollection({
@@ -104,6 +120,25 @@ const DocumentScreen = () => {
     fontSize: "1rem",
     border: "transparent",
   };
+
+  const onButtonClick = () => {
+     
+    // using Java Script method to get PDF file
+    fetch("SamplePDF.pdf").then((response) => {
+        response.blob().then((blob) => {
+         
+            // Creating new object of PDF file
+            const fileURL =
+                window.URL.createObjectURL(blob);
+                 
+            // Setting various property values
+            let alink = window.createElement("a");
+            alink.href = fileURL;
+            alink.download = "SamplePDF.pdf";
+            alink.click();
+        });
+    });
+};
   return (
     <>
       <div style={{ backgroundColor: "white", padding: "2rem 5rem" }}>
@@ -144,6 +179,9 @@ const DocumentScreen = () => {
 
                   <ListGroup.Item>
                     Description: {document.description}
+                    <button onClick={onButtonClick}>
+                    Download PDF
+                </button>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <IoMdEye
@@ -163,11 +201,14 @@ const DocumentScreen = () => {
                 <Card style={{ color: "black" }}>
                   <ListGroup variant="flush">
                     <ListGroup.Item>
-                     
-                      <button className="btn-block mb-3" onClick={showCollections} style={btnStyle}>
-                      Add To Collection <FaArrowRightLong color="black" />
+                      <button
+                        className="btn-block mb-3"
+                        onClick={showCollections}
+                        style={btnStyle}
+                      >
+                        Add To Collection <FaArrowRightLong color="black" />
                       </button>
-                     
+
                       {showCols &&
                         (loadingCollections ? (
                           <Loader />
@@ -175,47 +216,55 @@ const DocumentScreen = () => {
                           <Message variant="danger">
                             {error?.data?.message || error.error}
                           </Message>
-                        ) : (
+                        ) : userInfoMediquest ? (
                           <>
-                          {data?.map((collection) => 
-                          (
-                            <Row className="p-2 mt-2">
-                              <Col md={7}>
-                                <strong>{collection.title}</strong>
-                              </Col>
-                              <Col>
-                                <FaFolderPlus
-                                  onClick={addToCollectionHandler}
-                                  size={20}
-                                  style={{ cursor: "pointer" }}
-                                />
-                              </Col>{" "}
-                            </Row>
-                          ))}
-                          <Button
-                          type="button"
-                          className="btn-block mt-3"
-                          onClick={addToNewCollectionHandler}
-                          style={{
-                            padding: "0.5rem 1rem",
-                            color: "#75dab4",
-                            backgroundColor: "black",
-                            borderRadius: "5px",
-                            fontWeight: "bold",
-                            border: "transparent",
-                          }}
-                        >
-                          Add To New Collection
-                        </Button>
-                         
-                         </>
-                        )
-                       
-                    
-                        )}
+                            {data?.map((collection) => (
+                              <Row className="p-2 mt-2">
+                                <Col md={7}>
+                                  <strong>{collection.title}</strong>
+                                </Col>
+                                <Col>
+                                  <Button
+                                    style={{
+                                      backgroundColor: "#0b1e33",
+                                      border: "#0b1e33",
+                                    }}
+                                    className="btn-sm"
+                                    onClick={() =>
+                                      addToCollectionHandler(collection._id)
+                                    }
+                                  >
+                                    <FaFolderPlus
+                                      size={18}
+                                      style={{ cursor: "pointer" }}
+                                    />
+                                  </Button>
+                                </Col>{" "}
+                              </Row>
+                            ))}
+                            <Button
+                              type="button"
+                              className="btn-block mt-3"
+                              onClick={addToNewCollectionHandler}
+                              style={{
+                                padding: "0.5rem 1rem",
+                                color: "#75dab4",
+                                backgroundColor: "black",
+                                borderRadius: "5px",
+                                fontWeight: "bold",
+                                border: "transparent",
+                              }}
+                            >
+                              Add To New Collection
+                            </Button>
+                          </>
+                        ) : (
+                          <Message>
+                            Please <Link to="/login">sign in</Link> So you can
+                            add the document to your collections
+                          </Message>
+                        ))}
                       {}
-
-                      
                     </ListGroup.Item>
                   </ListGroup>
                 </Card>

@@ -23,6 +23,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
       }),
     }),
+    getUserProfile: builder.query({
+      query: () => ({
+        url: `${USERS_URL}/profile`,
+        method: "GET",
+      }),
+      providesTags: ['User'],
+      keepUnusedDataFor: 5,
+    }),
     profile: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/profile`,
@@ -70,12 +78,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ['Document'],
+      providesTags: ['Document'],
     }),
-    favList: builder.mutation({
+    favList: builder.query({
       query: () => ({
         url: `${USERS_URL}/favourites`,
-        method: 'POST',
       }),
       invalidatesTags: ['User'],
     }),
@@ -87,9 +95,10 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useProfileMutation,
+  useGetUserProfileQuery,
   useUploadUserImageMutation,
   useAddToFavMutation,
-  useFavListMutation,
+  useGetFavListQuery,
   useGetUsersQuery,
   useDeleteUserMutation,
   useUpdateUserMutation,

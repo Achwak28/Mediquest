@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import path from "path";
 //import products from './data/products.js'
 import cookieParser from 'cookie-parser'
+import bodyParser from 'body-parser'
 import collectionRoutes from './routes/collectionRoutes.js'
 import docRoutes from './routes/docRoutes.js'
 import userRoutes from './routes/userRoutes.js'
@@ -38,6 +39,7 @@ app.get('/api/config/paypal', (req,res) =>  res.send({ clientId: process.env.PAY
 // set dirname to current directory
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+//app.use('/uploads/uploadpdf', express.static(path.join(__dirname, '/uploads/files')));
  
 if (process.env.NODE_ENV === 'production') {
     const __dirname = path.resolve();

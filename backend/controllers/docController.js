@@ -1,7 +1,9 @@
 import Document from "../models/docModel.js";
 import User from "../models/userModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
+import path from "path";
 
+const __dirname = path.resolve();
 // description get all products
 //route GET /api/products
 //access PUBLIC
@@ -46,6 +48,29 @@ const getDocumentById = asyncHandler(async (req, res) => {
   //res.status(404).json({message :"Document is not found !"})
 });
 
+// @desc upload pdf file
+// @route GET /api/documents/:id/upload
+// @access Private/Admin
+const uploadFile = asyncHandler(async (req, res) => {
+  const { name } = req.body;
+  const file = req.file.path;
+  const item = await Item.create({ name, file });
+  res.status(201).json({ item });
+});
+
+// @desc download pdf file
+// @route GET /api/documents/:id/download
+// @access Private/Admin
+const downloadFile = asyncHandler(async (req, res) => {
+  const document = await Document.findById(req.params.id);
+  if (!document) {
+    res.status(404);
+    throw new Error("Document not Found !");
+  }
+  const file = document.file;
+  const filePath = path.join(__dirname, `../${file}`);
+  res.download(filePath);
+});
 
 // @desc    Create a product
 // @route   POST /api/products
@@ -55,6 +80,7 @@ const createDocument = asyncHandler(async (req, res) => {
     name: "Document Name",
     user: req.user._id,
     image: "/images/doc_image.png",
+    file:"/sample.pdf",
     year: "1",
     category: "course",
     numLikes: 0,
@@ -81,6 +107,7 @@ const updateDocument = asyncHandler(async (req, res) => {
     document.description = description;
     document.image = image;
     document.category = category;
+    document.file = file;
 
     const updatedDocument = await document.save();
     res.json(updatedDocument);
@@ -127,7 +154,7 @@ const createDocumentReview = asyncHandler(async (req, res) => {
       name: req.user.name,
       rating: Number(rating),
       comment,
-      user: req.user._id,
+      user: req.user._id, 
     };
 
     document.reviews.push(review);
@@ -166,6 +193,7 @@ const getTopDocuments = asyncHandler(async (req, res) => {
 export {   
   getDocs,
   getDocumentById, 
+  downloadFile,
   createDocument, 
   updateDocument, 
   deleteDocument,

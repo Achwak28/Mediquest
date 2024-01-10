@@ -2,6 +2,7 @@ const documents = [
   {
     name: "Examen du premier trimestre",
     image: "/images/sujet.jpg",
+    file:"/sample.pdf",
     description: "this is the first examen",
     year: "1",
     category: "exams",
@@ -12,6 +13,7 @@ const documents = [
   {
     name: "Examen du premier trimestre",
     image: "/images/course.png",
+    file:"/sample.pdf",
     description: "this is the first examen",
     year: "2",
     category: "exams",
@@ -22,6 +24,7 @@ const documents = [
   {
     name: "Examen du premier trimestre",
     image: "/images/sujet.jpg",
+    file:"/sample.pdf",
     description: "this is the first examen",
     year: "2",
     category: "exams",
@@ -32,6 +35,7 @@ const documents = [
   {
     name: "Examen du premier trimestre",
     image: "/images/course.png",
+    file:"/sample.pdf",
     description: "this is the first examen",
     year: "5",
     category: "exams",
@@ -42,6 +46,7 @@ const documents = [
   {
     name: "Examen du premier trimestre",
     image: "/images/sujet.jpg",
+    file:"/sample.pdf",
     description: "this is the first examen",
     year: "1",
     category: "exams",
@@ -52,6 +57,7 @@ const documents = [
   {
     name: "Examen du premier trimestre",
     image: "/images/course.png",
+    file:"/sample.pdf",
     description: "this is the first examen",
     year: "1",
     category: "exams",

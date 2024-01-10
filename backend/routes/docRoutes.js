@@ -8,6 +8,7 @@ import {
   createDocumentReview,
   getTopDocuments,
   getAllFavorites,
+  downloadFile,
 } from "../controllers/docController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
@@ -21,6 +22,7 @@ router
   .put(protect, admin, updateDocument)
   .delete(protect, admin, deleteDocument);
 router.route("/:id/reviews").post(protect, createDocumentReview);
+router.route("/:id/download").get(downloadFile)
 router.route("/allFav").get(protect,getAllFavorites)
 
 export default router;

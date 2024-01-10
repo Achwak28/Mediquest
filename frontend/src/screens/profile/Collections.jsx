@@ -31,7 +31,6 @@ const ProfileScreen = () => {
   }, [userInfoMediquest.email, userInfoMediquest.name]);
 
   const { data, isLoading, error } = useGetMyCollectionsQuery();
-  console.log(data);
   const dispatch = useDispatch();
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -65,23 +64,35 @@ const ProfileScreen = () => {
               <h2>Collections</h2>
             </Col>
           </Row>
-          <Row className="m-2 mx-5">
-            {data?.map((collection) => (
-              <Col md={4}>
-               
-                <div className="collection-card mx-3">
-                <LinkContainer to={`/collection/${collection._id}`} style={{cursor:"pointer"}}>
-                  <PiFoldersFill size={170} />
-                  </LinkContainer>
-                  <h6>{collection.title}</h6>
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <Message variant="danger">{error.data.message}</Message>
+          ) : data.length === 0 ? (
+            <Row className="justify-content-center">
+              <Col md={10}><Message>you have no collections, create one now!</Message></Col>
+              
+            </Row>
+          ) : (
+            <Row className="m-2">
+              {data?.map((collection) => (
+                <Col md={4}>
+                  <div className="collection-card mx-3">
+                    <LinkContainer
+                      to={`/collection/${collection._id}`}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <PiFoldersFill size={170} />
+                    </LinkContainer>
+                    <h6>{collection.title}</h6>
 
-                  <Col>Created At</Col>
-                  <Col>{collection.createdAt.substring(0, 10)}</Col>
-                </div>
-                
-              </Col>
-            ))}
-          </Row>
+                    <Col>Created At</Col>
+                    <Col>{collection.createdAt.substring(0, 10)}</Col>
+                  </div>
+                </Col>
+              ))}
+            </Row>
+          )}
         </Col>
       </Row>
     </>

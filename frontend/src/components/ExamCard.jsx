@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState,useEffect} from 'react'
 import { Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { Row, Col, Image } from "react-bootstrap";
@@ -9,10 +9,19 @@ import { toast } from 'react-toastify';
 import { AiFillHeart } from "react-icons/ai"
 import Rating from './Rating'
 import '../screens/exams/ExamsSCreen.css' 
-import {useAddToFavMutation} from "../slices/usersApiSlice"
+import {
+  useProfileMutation,
+  useGetFavListQuery,
+  useGetUserProfileQuery,
+  useAddToFavMutation,
+} from "../slices/usersApiSlice";
+import { useGetDocumentsQuery } from "../slices/documentApiSlice";
 import { setCredentials } from "../slices/authSlice";
  
 const ExamCard = ({document}) => {
+  
+const [likes, setLikes] = useState(document.numLikes)
+
 
   const [addToFav] = useAddToFavMutation();
 
@@ -20,11 +29,40 @@ const ExamCard = ({document}) => {
   const dispatch = useDispatch();
   const { userInfoMediquest } = useSelector((state) => state.auth);
 
+
+  const { data: userProfile, refetch, isLoadingUserProfile } = useGetUserProfileQuery();
+
+  
+  const [color, setColor]= useState()
+
+
+  useEffect(() => {
+    const found = userProfile?.favourites.find(obj => {
+      return obj._id === document._id;
+    }) 
+    setColor(found ? "#fa3e5f": "#75dab4")
+  }, [])
+
+
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await addToFav({documentId}).unwrap()
-      dispatch(setCredentials({ ...res }));
+      const res = await addToFav({_id: documentId,
+        name: document.name,
+        image: document.image,
+        rating: document.rating,
+        numReviews: document.numReviews,
+        numLikes: likes}).unwrap()
+        refetch()
+        
+   if(color === "#75dab4"){ setColor("#fa3e5f")
+    }else if (color === "#fa3e5f") {
+      setColor( "#75dab4")
+    }
+    
+    setLikes(res.likes)
+      
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -58,17 +96,18 @@ const ExamCard = ({document}) => {
                   </span>
                   <AiFillHeart onClick={submitHandler}
                     size={20}
-                    color="#75dab4"
+                    color={color}
                     style={{  cursor:"pointer" }}
                   />
                   <span
                    style={{
-                    color: "#75dab4",
+                    color: `${color}`,
                     fontSize: "24",
                     marginLeft: "0.2rem",
                     cursor:"pointer"
                   }}>
-                  {document.numLikes}
+                    {likes}
+                  {/*document.numLikes*/}
 
                   </span>
                  

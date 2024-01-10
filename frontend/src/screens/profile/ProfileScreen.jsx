@@ -181,9 +181,10 @@ const ProfileScreen = () => {
               </Col>
             </Row>
           ) : isActive === "favourites" ? (
-            <FavScreen />
+            <Row className=""> <FavScreen /> </Row>
           ) : (
-            <Collections />
+            <Row className=""> <Collections /></Row>
+           
           )}
         </Col>
       </Row>

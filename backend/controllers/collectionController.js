@@ -26,6 +26,69 @@ const createNewCollection = asyncHandler(async (req, res) => {
   }
 });
 
+// description add anther document to collection
+//route PUT /api/collections/:id/add
+//access Private
+const addMoreDocs = asyncHandler(async (req, res) => {
+  const { _id: documentId, name, image } = req.body;
+  const collection = await Collection.findById(req.params.id)
+ 
+    const alreadyAdded = collection.collectionItems.find(
+      (d) => d.document.toString() === documentId)
+
+      console.log(alreadyAdded)
+    
+    if (!alreadyAdded) {
+
+      const newDoc = {
+        name,
+        image,
+        document: documentId,
+        _id: undefined,
+      };
+
+      collection.collectionItems.push(newDoc);
+      await collection.save();
+      res.status(201).json({ message: "Document added", collection });
+     
+    } else {
+      res.status(400);
+      throw new Error("Document is already in the collection");
+    }
+  
+});
+
+
+// description delete document from collection
+//route DELETE /api/collections/:id/delete
+//access Private
+const deleteDocfromCollection = asyncHandler(async (req, res) => {
+  const { document: documentId } = req.body;
+  const collection = await Collection.findOne({ _id: req.params.id })
+
+  const documentToDelete = await Collection.findOne({
+    _id:req.params.id ,
+    }).select({collectionItems: {$elemMatch: {document: documentId}}})
+    
+
+  if (documentToDelete.collectionItems.length !== 0) {
+    const document = {
+      name : documentToDelete.collectionItems[0].name,
+      image : documentToDelete.collectionItems[0].image,
+      document: documentToDelete.collectionItems[0].document,
+      _id: documentToDelete.collectionItems[0]._id,
+    };
+    collection.collectionItems.pull(document);
+ 
+
+    await collection.save();
+    res.status(200).json({ message: "Document deleted", collection });
+  } else {
+    res.status(404);
+    throw new Error("Document Not Found in Collection!");
+  }
+});
+
 // description get collections for logged in user
 //route GET /api/collections/mycollections
 //access Private
@@ -78,13 +141,12 @@ const deleteCollection = asyncHandler(async (req, res) => {
 
   if (collection) {
     await Collection.deleteOne({ _id: collection._id });
-    res.json({ message: 'Collection removed' });
+    res.json({ message: "Collection removed" });
   } else {
     res.status(404);
-    throw new Error('Collection not found');
+    throw new Error("Collection not found");
   }
 });
-
 
 // description update collection's title
 //route PUT /api/collections/:id/title
@@ -113,6 +175,8 @@ const getCollections = asyncHandler(async (req, res) => {
 
 export {
   createNewCollection,
+  addMoreDocs,
+  deleteDocfromCollection,
   getMyCollections,
   getCollectionById,
   deleteCollection,

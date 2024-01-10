@@ -23,12 +23,28 @@ const collectionApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ["Collections"],
-    }), 
+    }),  
     deleteCollection: builder.mutation({
       query: (collectionId) => ({
         url: `${COLLECTIONS_URL}/${collectionId}`,
         method: 'DELETE',
       }),
+    }),
+    deleteDocFromCollection: builder.mutation({
+      query: (data) => ({
+        url: `${COLLECTIONS_URL}/${data.collectionId}/delete`,
+        method: 'DELETE',
+        body: data,
+      }),
+      invalidatesTags: ['Collections'],
+    }),
+    addMoreDocs: builder.mutation({
+      query: (data) => ({
+        url: `${COLLECTIONS_URL}/${data.collectionId}/add`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Collections"],
     }),
     getMyCollections: builder.query({
       query: () => ({
@@ -50,6 +66,8 @@ export const {
   useGetCollectionDetailsQuery,
   useUpdateCollectionMutation,
   useDeleteCollectionMutation,
+  useAddMoreDocsMutation,
+  useDeleteDocFromCollectionMutation,
   useGetMyCollectionsQuery,
   useGetCollectionsQuery,
 } = collectionApiSlice;

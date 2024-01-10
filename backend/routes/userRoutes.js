@@ -27,6 +27,6 @@ router
   .delete(protect, admin, deleteUser)
   .put(protect, admin, updateUser);
 router.post("/toFav", protect, toFav);
-router.route("/favourites").post(protect,getAllFavorites)
+router.route("/favourites").get(protect,getAllFavorites)
 export default router;
  
