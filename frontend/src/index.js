@@ -3,14 +3,13 @@ import ReactDOM from "react-dom/client";
 //import 'bootstrap/dist/css/bootstrap.min.css'
 import "./assets/styles/bootstrap.custom.css";
 import "./assets/styles/index.css";
-import { 
+import {
   createBrowserRouter,
   createRoutesFromElements,
-  Route, 
+  Route,
   RouterProvider,
 } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { Provider } from "react-redux";
 import store from "./store";
 import App from "./App";
@@ -21,17 +20,16 @@ import CoursesScreen from "./screens/exams/CoursesScreen";
 import SummariesScreen from "./screens/exams/SummariesScreen";
 import SearchScreen from "./screens/exams/SearchScreen";
 import DocumentScreen from "./screens/DocumentScreen";
-import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/loginScreen/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen/RegisterScreen";
-import ShippingScreen from "./screens/ShippingScreen";
-import PaymentScreen from "./screens/PaymentScreen";
-import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OtpRoute from "./components/OtpRoute";
+import OTPinput from "./screens/OTPinput";
+import ResetRoute from "./components/ResetRoute";
+import ResetPassword from "./screens/ResetPassword";
 import CollectionScreen from "./screens/CollectionScreen";
 import ProfileScreen from "./screens/profile/ProfileScreen";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
-import OrderListScreen from "./screens/admin/OrderListScreen";
 import DocumentListScreen from "./screens/admin/DocumentListScreen";
 import DocumentEditScreen from "./screens/admin/DocumentEditScreen";
 import UserListScreen from "./screens/admin/UserListScreen";
@@ -51,31 +49,38 @@ const router = createBrowserRouter(
         element={<SearchScreen />}
       />
       <Route path="/document/:id" element={<DocumentScreen />} />
-      <Route path="/cart" element={<CartScreen />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
+      
+      
+
+      <Route path="" element={<OtpRoute />}>
+      <Route path="/forgotpassword" element={<OTPinput />} />
+      </Route>
+
+      <Route path="" element={<ResetRoute />}>
+      <Route path="/resetpassword" element={<ResetPassword />} />
+      </Route>
 
       <Route path="" element={<PrivateRoute />}>
-        <Route path="/shipping" element={<ShippingScreen />} />
-        <Route path="/payment" element={<PaymentScreen />} />
-        <Route path="/placeorder" element={<PlaceOrderScreen />} />
         <Route path="/collection/:id" element={<CollectionScreen />} />
-        <Route path="/profile" element={<ProfileScreen />} >
-
-           <Route path="/profile/userinfo" element={<ProfileScreen />} />
-           <Route path="/profile/favourites" element={<ProfileScreen />} />
-           <Route path="/profile/collections" element={<ProfileScreen />} />
+        <Route path="/profile" element={<ProfileScreen />}>
+          <Route path="/profile/userinfo" element={<ProfileScreen />} />
+          <Route path="/profile/favourites" element={<ProfileScreen />} />
+          <Route path="/profile/collections" element={<ProfileScreen />} />
         </Route>
-      </Route>  
+      </Route>
 
       <Route path="" element={<AdminRoute />}>
-        <Route path="/admin/orderlist" element={<OrderListScreen />} />
         <Route path="/admin/documentlist" element={<DocumentListScreen />} />
         <Route
           path="/admin/documentlist/:pageNumber"
           element={<DocumentListScreen />}
         />
-        <Route path="/admin/document/:id/edit" element={<DocumentEditScreen />} />
+        <Route
+          path="/admin/document/:id/edit"
+          element={<DocumentEditScreen />}
+        />
         <Route path="/admin/userlist" element={<UserListScreen />} />
         <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
       </Route>
@@ -88,10 +93,8 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
       <Provider store={store}>
-        <PayPalScriptProvider deferLoading={true}>
-          <RouterProvider router={router} />
-        </PayPalScriptProvider>
-      </Provider> 
+        <RouterProvider router={router} />
+      </Provider>
     </HelmetProvider>
   </React.StrictMode>
 );

@@ -77,7 +77,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/toFav`,
         method: 'POST',
         body: data,
-      }),
+      }), 
       invalidatesTags: ['Document'],
       providesTags: ['Document'],
     }),
@@ -86,6 +86,20 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/favourites`,
       }),
       invalidatesTags: ['User'],
+    }),
+    sendOTP: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/recoveryemail`,
+        method: 'POST',
+        body: data,
+      }), 
+    }),
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/resetpassword`,
+        method: 'POST',
+        body: data,
+      }), 
     }),
   }),
 });
@@ -103,4 +117,6 @@ export const {
   useDeleteUserMutation,
   useUpdateUserMutation,
   useGetUserDetailsQuery,
+  useSendOTPMutation,
+  useResetPasswordMutation,
 } = usersApiSlice;

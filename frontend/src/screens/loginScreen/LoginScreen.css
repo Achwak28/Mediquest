@@ -1,4 +1,5 @@
 .login-container {
+  overflow: scroll;
   overflow: hidden !important;
 }
 .login-container .login-content {
@@ -10,7 +11,7 @@
   padding: 0 !important;
   margin: 0 !important;
   background-image: url("../../assets/login_bg.png");
-  height: 91vh;
+  height: 100vh;
   overflow: hidden;
 }
 .login-container .login-content .inputs {

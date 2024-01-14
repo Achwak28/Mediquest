@@ -16,7 +16,6 @@ import { useLogoutMutation } from "../slices/usersApiSlice";
 import { logout } from "../slices/authSlice";
 
 const Header = () => {
-  const { cartItems } = useSelector((state) => state.cart);
   const { userInfoMediquest } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
@@ -45,7 +44,7 @@ const Header = () => {
   };
 
   return (
-    <header style={{ background: "#0d0d0d" }}>
+    <header style={{ background: "#0d0d0d", position: "fixed", top: "0", width:"100%", zIndex:99 }}>
       <Navbar variant="dark" expand="md" collapseOnSelect style={dark}>
         <Container>
           <LinkContainer to="/">

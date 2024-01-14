@@ -108,7 +108,7 @@ const RegisterScreen = () => {
               <Col className="white">
                 Already have an account?{" "}
                 <Link
-                  to={redirect ? `/register?redirect=${redirect}` : "/register"}
+                  to={redirect ? `/login?redirect=${redirect}` : '/login'}
                   style={{ color: "#75dab4" }}
                 >
                   {" "}

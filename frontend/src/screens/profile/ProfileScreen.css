@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    padding-top: 20rem;
+    padding-top: 40rem;
     color: white;
 }
 .profile-row .profile-sidebar a,
@@ -14,9 +14,9 @@
     color: white !important;
    
     
-}
+} 
 .profile-image .content-side{
-    height: 90vh;
+    height: 100vh;
 }
 .profile-row .content-side .profile-image{
     display: flex;

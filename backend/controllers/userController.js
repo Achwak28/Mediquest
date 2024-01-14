@@ -2,6 +2,11 @@ import User from "../models/userModel.js";
 import Document from "../models/docModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import generateToken from "../utils/generateToken.js";
+import nodemailer from "nodemailer"
+//import validator from "email-validator"
+import EmailValidator from "email-deep-validator"
+
+const emailValidator = new EmailValidator();
 
 // description login user
 //route POST /api/users/login
@@ -41,29 +46,42 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
 
-  const user = await User.create({
-    name,
-    email,
-    password,
-    image: "/images/user_image.png",
-    favourites: [],
-  });
+  
+const { wellFormed, validDomain, validMailbox } = await emailValidator.verify(email);
 
-  if (user) {
-    generateToken(res, user._id);
-
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      image: user.image,
-      favourites: user.favourites,
-      isAdmin: user.isAdmin,
+  if(validDomain & wellFormed & (validMailbox !== null)){
+    const user = await User.create({
+      name,
+      email,
+      password,
+      image: "/images/user_image.png",
+      favourites: [],
     });
-  } else {
+    if (user) {
+      generateToken(res, user._id);
+  
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        favourites: user.favourites,
+        isAdmin: user.isAdmin,
+      });
+    } else {
+      res.status(400);
+      throw new Error("Invalid user data");
+    }
+  } else{
     res.status(400);
-    throw new Error("Invalid user data");
+      throw new Error("Pease enter a valid email address");
   }
+ 
+  
+
+  
+
+  
 });
 
 // description logout user
@@ -335,6 +353,108 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+// forgot password recovery
+
+// description send otp code to user email
+//route PUT /api/users/send_recovery_email
+//access public
+function sendEmail({ recipient_email, OTP }) {
+  return new Promise((resolve, reject) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MY_EMAIL,
+        pass: process.env.MY_PASSWORD,
+      }, 
+    });
+ 
+    const mail_configs = {
+      from: process.env.MY_EMAIL,
+      to: recipient_email,
+      subject: "MEDIQUEST PASSWORD RECOVERY",
+      html: `<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - OTP Email Template</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+  <div style="margin:50px auto;width:70%;padding:20px 0">
+    <div style="border-bottom:1px solid #eee">
+      <a href="" style="font-size:1.4em;color: #75dab4;text-decoration:none;font-weight:600">MediQuest</a>
+    </div>
+    <p style="font-size:1.1em">Hi,</p>
+    <p>Thank you for choosing MediQuest. Use the following OTP to complete your Password Recovery Procedure. OTP is valid for 5 minutes</p>
+    <h2 style="background: #75dab4;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${OTP}</h2>
+    <p style="font-size:0.9em;">Best Regards,<br />MediQuest</p>
+    <hr style="border:none;border-top:1px solid #eee" />
+    <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+      <p>MediQuest Inc</p>
+      <p>Algeria</p>
+    </div>
+  </div>
+</div>
+<!-- partial -->
+  
+</body>
+</html>`,
+    };
+    transporter.sendMail(mail_configs, function (error, info) {
+      if (error) {
+        console.log(error);
+        return reject({ message: `An error has occured` });
+      }
+      return resolve({ message: "Email sent succesfuly" });
+    });
+  });
+}
+
+const sendOTPcode = asyncHandler( async(req, res) => {
+  const { recipient_email} = req.body;
+console.log(recipient_email)
+  const userExists = await User.findOne({ email : recipient_email });
+  console.log(userExists)
+  if (!userExists) {
+    res.status(404);
+    throw new Error("User does not Exist!");
+  }
+  sendEmail(req.body)
+    .then((response) => res.status(200).send({ message: `Email sent succesfuly` }))
+    .catch((error) => res.status(400).send({message: `${error.message}`}));
+})
+ 
+// description update user profile
+//route PUT /api/users/resetpassword
+//access private
+const updatePassword = asyncHandler(async (req, res) => {
+  const {email} = req.body
+  const user = await User.findOne({email});
+ 
+  if (user) {
+    
+     user.password = req.body.password;
+  
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      image: user.image,
+      favourites: user.favourites,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
 export {
   loginUser,
   registerUser,
@@ -347,4 +467,6 @@ export {
   getUserById,
   updateUser,
   deleteUser,
+  sendOTPcode,
+  updatePassword,
 };

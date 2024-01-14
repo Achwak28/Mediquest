@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Form, Image, Row, Col } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { FaTimes } from "react-icons/fa";
 import { FaUser, FaHeart } from "react-icons/fa";
-import { FaCircleUser } from "react-icons/fa6";
 import { IoIosFolderOpen } from "react-icons/io";
 import { toast } from "react-toastify";
 import Message from "../../components/Message";
@@ -14,7 +11,6 @@ import {
   useProfileMutation,
   useUploadUserImageMutation,
 } from "../../slices/usersApiSlice";
-//import { useGetMyOrdersQuery } from "../../slices/ordersApiSlice";
 import { setCredentials } from "../../slices/authSlice";
 import StyledButton from "../../components/Button";
 import FavScreen from "./FavScreen";
@@ -33,8 +29,6 @@ const ProfileScreen = () => {
 
   const [uploadUserImage, { isLoading: loadingUpload }] =
     useUploadUserImageMutation();
-
-  //const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
@@ -83,8 +77,8 @@ const ProfileScreen = () => {
 
   return (
     <>
-      <Row className="profile-row">
-        <Col className="profile-sidebar p-5" md={3} style={{height:"90vh"}}>
+      <Row className="profile-row pt-5">
+        <Col className="profile-sidebar p-5" md={3} style={{ height: "100vh" }}>
           <Link
             to="/profile/userinfo"
             className="mt-5"
@@ -118,16 +112,20 @@ const ProfileScreen = () => {
                   {/*<FaCircleUser size={150} />*/}
                   <Image
                     src={image}
-                    style={{ width: "150px", height: "150px", borderRadius:"50%", marginBottom:"2rem" }}
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      borderRadius: "50%",
+                      marginBottom: "2rem",
+                    }}
                   />
-                   <Form.Control
-                  label="Choose File"
-                  onChange={uploadFileHandler}
-                  type="file"
-                  style={{width:"15rem"}}
-                ></Form.Control>
+                  <Form.Control
+                    label="Choose File"
+                    onChange={uploadFileHandler}
+                    type="file"
+                    style={{ width: "15rem" }}
+                  ></Form.Control>
                 </div>
-               
               </Col>
               <Col>
                 {" "}
@@ -172,19 +170,21 @@ const ProfileScreen = () => {
                     ></Form.Control>
                   </Form.Group>
                   <StyledButton type="submit" text="Update" />
-                  {/*  <Button type="submit" variant="primary">
-                 Update
-               </Button> */}
-
+                  {loadingUpload && <Loader />}
                   {loadingUpdateProfile && <Loader />}
                 </Form>
               </Col>
             </Row>
           ) : isActive === "favourites" ? (
-            <Row className=""> <FavScreen /> </Row>
+            <Row className="">
+              {" "}
+              <FavScreen />{" "}
+            </Row>
           ) : (
-            <Row className=""> <Collections /></Row>
-           
+            <Row className="">
+              {" "}
+              <Collections />
+            </Row>
           )}
         </Col>
       </Row>

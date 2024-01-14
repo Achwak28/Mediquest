@@ -30,7 +30,7 @@ const getDocs = asyncHandler(async (req, res) => {
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
-  res.json({ documents, page, pages: Math.ceil(count / pageSize) });
+  res.json({ documents: documents, page, pages: Math.ceil(count / pageSize) });
 });
 
 // description get SINGLE PRODUCT BY id
@@ -107,7 +107,6 @@ const updateDocument = asyncHandler(async (req, res) => {
     document.description = description;
     document.image = image;
     document.category = category;
-    document.file = file;
 
     const updatedDocument = await document.save();
     res.json(updatedDocument);

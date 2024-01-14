@@ -1,12 +1,11 @@
-body{
+body {
   background-color: #0d0d0d;
-  
 }
 main {
   min-height: 80vh;
   overflow: hidden;
 }
- 
+
 .rating span {
   margin: 0.1rem;
 }
@@ -28,8 +27,8 @@ main {
   white-space: nowrap; /* Prevent wrapping */
 }
 .product-image {
- height:203 !important ;
- width: 255 !important;
+  height: 203 !important ;
+  width: 255 !important;
 }
 
 table td,
@@ -60,15 +59,15 @@ table th {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
 }
-.logo{
+.logo {
   font-weight: bolder !important;
 }
-.logo span{
+.logo span {
   font-style: italic;
-    margin-right: 3px;
-    margin-left: 2px;
-    color: #ffffff;
-    font-size: xx-large;
+  margin-right: 3px;
+  margin-left: 2px;
+  color: #ffffff;
+  font-size: xx-large;
 }
 
 button.btn-block.btn.btn-primary {
@@ -79,11 +78,11 @@ button.btn-block.btn.btn-primary {
 }*/
 .btn-primary {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #f5a201;
-  --bs-btn-border-color: #f5a201;
+  --bs-btn-bg: #38b58b;
+  --bs-btn-border-color: #38b58b;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #0B1E33;
-  --bs-btn-hover-border-color: #0B1E33;
+  --bs-btn-hover-bg: #0b1e33;
+  --bs-btn-hover-border-color: #0b1e33;
   --bs-btn-focus-shadow-rgb: 89, 103, 117;
   --bs-btn-active-color: #fff;
   --bs-btn-active-bg: #303d4a;
@@ -94,11 +93,55 @@ button.btn-block.btn.btn-primary {
   --bs-btn-disabled-border-color: #3c4c5d;
 }
 .form-check-input:checked {
-  background-color: #75D4B4;
-  border-color: #75D4B4;
+  background-color: #75d4b4;
+  border-color: #75d4b4;
 }
-.collection-card{
+.collection-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.container-forgot {
+  background-color: #f1f2f5 !important;
+  height: fit-content;
+  overflow: scroll;
+  overflow-x: hidden;
+  text-align: center;
+  color: black;
+}
+
+.container-reset{
+  text-align: left;
+}
+
+.container-forgot .otp-input {
+  width: 50px;
+  height: 50px;
+  margin: 0.5rem 0.8rem;
+  outline: none;
+  border: solid 1px #adadad;
+  text-align: center;
+  font-weight: 700;
+  font-size: x-large;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  transition: all 0.25s ease-out;
+}
+.container-forgot otp-input:focus {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border: solid 2px #75d4b4;
+}
+
+.container-forgot .list-group-item {
+  border: none;
+}
+
+.container-forgot .verify-btn {
+  width: 100%;
+  font-size: medium;
+  font-weight: 600;
+  background-color: #38b58b;
+  border-color: #38b58b;
+  padding: 0.8rem 0.2rem;
 }

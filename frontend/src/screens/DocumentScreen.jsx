@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { FaFolderPlus } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
+import Modal from "react-bootstrap/Modal";
 import {
   Row,
   Col,
@@ -122,23 +123,32 @@ const DocumentScreen = () => {
   };
 
   const onButtonClick = () => {
-     
     // using Java Script method to get PDF file
     fetch("SamplePDF.pdf").then((response) => {
-        response.blob().then((blob) => {
-         
-            // Creating new object of PDF file
-            const fileURL =
-                window.URL.createObjectURL(blob);
-                 
-            // Setting various property values
-            let alink = window.createElement("a");
-            alink.href = fileURL;
-            alink.download = "SamplePDF.pdf";
-            alink.click();
-        });
+      response.blob().then((blob) => {
+        // Creating new object of PDF file
+        const fileURL = window.URL.createObjectURL(blob);
+
+        // Setting various property values
+        let alink = window.createElement("a");
+        alink.href = fileURL;
+        alink.download = "SamplePDF.pdf";
+        alink.click();
+      });
     });
-};
+  };
+
+  // image resizing
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [dialog, setDialog] = useState(false);
+
+  const toggleDialog = () => {
+    setDialog(!dialog);
+  };
+
   return (
     <>
       <div style={{ backgroundColor: "white", padding: "2rem 5rem" }}>
@@ -162,8 +172,34 @@ const DocumentScreen = () => {
                 backgroundColor: "white",
               }}
             >
+              <Modal
+              size="lg"
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>{document.name}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <Image
+                  src={document.image}
+                  alt={document.name}
+                  
+                  style={{margin:"auto", width:"100%", height:"100%"}}
+                />
+                </Modal.Body>
+              </Modal>
+             
               <Col md={4}>
-                <Image src={document.image} alt={document.name} fluid />
+                <Image
+                  src={document.image}
+                  alt={document.name}
+                  style={{cursor:"pointer"}}
+                  fluid
+                  onClick={handleShow}
+                />
               </Col>
               <Col md={4}>
                 <ListGroup variant="flush">
@@ -179,9 +215,7 @@ const DocumentScreen = () => {
 
                   <ListGroup.Item>
                     Description: {document.description}
-                    <button onClick={onButtonClick}>
-                    Download PDF
-                </button>
+                    <button onClick={onButtonClick}>Download PDF</button>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <IoMdEye

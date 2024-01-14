@@ -15,7 +15,7 @@ const SummariesScreen = () => {
     keyword,
     pageNumber,
   });
-
+ 
   const [summaries, setSummaries] = useState( data?.documents.filter((item) => item.category === 'summary'))
    
   return (

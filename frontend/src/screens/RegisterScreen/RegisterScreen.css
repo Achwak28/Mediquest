@@ -2,7 +2,7 @@
   padding: 0 !important;
   margin: 0 !important;
   background-image: url("../../assets/register_bg.png");
-  height: 91vh;
+  height: 100vh;
 }
 .register-form-container {
   display: flex;
