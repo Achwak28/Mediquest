@@ -1,5 +1,10 @@
+*{
+  font-family: 'Poppins', sans-serif;
+  
+}
 body {
   background-color: #0d0d0d;
+  font-family: 'Poppins', sans-serif;
 }
 main {
   min-height: 80vh;
@@ -81,8 +86,8 @@ button.btn-block.btn.btn-primary {
   --bs-btn-bg: #38b58b;
   --bs-btn-border-color: #38b58b;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #0b1e33;
-  --bs-btn-hover-border-color: #0b1e33;
+  --bs-btn-hover-bg: #38b58b;
+  --bs-btn-hover-border-color: #38b58b;
   --bs-btn-focus-shadow-rgb: 89, 103, 117;
   --bs-btn-active-color: #fff;
   --bs-btn-active-bg: #303d4a;
@@ -101,7 +106,14 @@ button.btn-block.btn.btn-primary {
   flex-direction: column;
   align-items: center;
 }
-
+.collection-container{
+  background-color: #f1f2f5 !important;
+  height: fit-content;
+  overflow: scroll;
+  overflow-x: hidden;
+  text-align: center;
+  color: black;
+}
 .container-forgot {
   background-color: #f1f2f5 !important;
   height: fit-content;
@@ -128,7 +140,7 @@ button.btn-block.btn.btn-primary {
     rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   transition: all 0.25s ease-out;
 }
-.container-forgot otp-input:focus {
+.container-forgot .otp-input:focus {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border: solid 2px #75d4b4;
 }

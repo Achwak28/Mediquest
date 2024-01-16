@@ -40,8 +40,11 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<HomeScreen />} />
       <Route path="/exams" element={<ExamsScreen />} />
+      <Route path="/exams/page/:pageNumber" element={<ExamsScreen />} />
       <Route path="/courses" element={<CoursesScreen />} />
+      <Route path="/courses/page/:pageNumber" element={<CoursesScreen />} />
       <Route path="/summaries" element={<SummariesScreen />} />
+      <Route path="/summaries/page/:pageNumber" element={<SummariesScreen />} />
       <Route path="/search/:keyword" element={<SearchScreen />} />
       <Route path="/page/:pageNumber" element={<SearchScreen />} />
       <Route

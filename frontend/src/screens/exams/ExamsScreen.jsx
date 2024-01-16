@@ -1,88 +1,105 @@
 import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Pagination } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import Form from "react-bootstrap/Form";
 import { useGetDocumentsQuery } from "../../slices/documentApiSlice";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-import Paginate from "../../components/Paginate";
 import "./ExamsSCreen.css";
 import ExamCard from "../../components/ExamCard";
 import Year from "../../components/year/filterRadio";
 
 const ExamsScreen = () => {
   const { pageNumber, keyword } = useParams();
-  const { data: documents, isLoading, isError } = useGetDocumentsQuery({
+  const { data, isLoading, isError } = useGetDocumentsQuery({
     keyword,
     pageNumber,
+   category:"exam",
   });
+  //const {documents} = data;
 
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  console.log(documents);
-  const [exams, setExams] = useState(
-    documents?.documents.filter((item) => item.category === "exams")
-  );
-
-  console.log(
-    exams+"  exams"
-  );
+  console.log(data);
+  
 
   // ----------- Radio Filtering -----------
   const handleChange = (event) => {
     setSelectedCategory(event.target.value);
-    const newDocuments = documents?.documents.filter(
+    const newDocuments = data?.documents.filter(
       (document) => document.year === selectedCategory
     );
-    console.log(newDocuments)
-    setExams(newDocuments);
+    console.log(newDocuments);
+    //setExams(newDocuments);
   };
 
   const filterDocuments = (year) => {
-    const newDocuments = documents.filter((document) => document.year === "1");
+    const newDocuments = data.documents.filter(
+      (document) => document.year === "1"
+    );
     console.log(newDocuments);
-    setExams(newDocuments);
+    //setExams(newDocuments);
   };
 
   return (
     <>
       <Row className="exams-row">
-        <Col className="filter-side" md={3} style={{ height: "88vh", paddingLetf:"2rem" }}>
+        <Col
+          className="filter-side"
+          md={2}
+          style={{ height: "100vh", paddingLetf: "2rem" }}
+        >
           <Year handleChange={handleChange} />
 
           <Form.Check label="1" name="group1" type="radio" />
         </Col>
-        {isLoading ? (
-          <Loader />
-        ) : isError ? (
-          <Message variant="danger">
-            {isError?.data?.message || isError?.error}
-          </Message>
-        ) : (
-          <Col
-            className="content-side"
-            style={{ backgroundColor: "#161616" }}
-            md={9}
-          >
-            <Row className="p-3 mt-3">
-              <Col>
-                <strong>Exams</strong>
-              </Col>
-              <Col>
-                <strong></strong>
-              </Col>
-            </Row>
+
+        <Col
+          className="content-side"
+          style={{ backgroundColor: "#161616" }}
+          md={10}
+        >
+          <Row className="p-3 mt-3">
+            <Col>
+              <strong>Exams</strong>
+            </Col>
+            <Col md={2}>
+              
+            </Col>
+          </Row>{" "}
+          {/* .filter((item) => item.category === "exams") */}
+          {isLoading ? (
+            <Loader />
+          ) : isError ? (
+            <Message variant="danger">
+              {isError?.data?.message || isError?.error}
+            </Message>
+          ) : (
             <Row className="m-2">
-              {documents.documents
-                .filter((item) => item.category === "exams")
-                .map((document) => (
-                  <Col key={document._id} sm={12} md={4} lg={5} xl={3}>
-                    <ExamCard document={document} className="m-3" />
-                  </Col>
-                ))}
+              {data.categorizedDocs.map((document) => (
+                <Col key={document._id} sm={12} md={4} lg={5} xl={3}>
+                  <ExamCard document={document} className="m-3" />
+                </Col>
+              ))}
             </Row>
-          </Col>
-        )}
+          )}
+         
+          {data?.pages > 1 && (
+                <Pagination className="mx-auto my-2">
+                  {[...Array(data?.pages).keys()].map((x) => (
+                    <LinkContainer key={x + 1} to={`/exams/page/${x + 1}`}>
+                      <Pagination.Item active={x + 1 === data?.page}>
+                        {x + 1}
+                      </Pagination.Item>
+                    </LinkContainer>
+                  ))}
+                </Pagination>
+              )}
+     
+          
+        </Col>
       </Row>
     </>
   );

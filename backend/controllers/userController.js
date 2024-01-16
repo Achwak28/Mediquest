@@ -421,7 +421,7 @@ console.log(recipient_email)
   if (!userExists) {
     res.status(404);
     throw new Error("User does not Exist!");
-  }
+  } 
   sendEmail(req.body)
     .then((response) => res.status(200).send({ message: `Email sent succesfuly` }))
     .catch((error) => res.status(400).send({message: `${error.message}`}));
@@ -455,6 +455,26 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
+//description send code to new users
+//route POST /api/users/verificationcode
+//access public
+
+const sendVerificationcode = asyncHandler( async(req, res) => {
+
+  const { recipient_email} = req.body;
+  console.log(recipient_email)
+    const userExists = await User.findOne({ email : recipient_email });
+    console.log(userExists)
+    if (userExists) {
+      res.status(404);
+      throw new Error("User already Exists!");
+    } 
+
+  sendEmail(req.body)
+    .then((response) => res.status(200).send({ message: `Code sent succesfuly` }))
+    .catch((error) => res.status(400).send({message: `${error.message}`}));
+})
+
 export {
   loginUser,
   registerUser,
@@ -469,4 +489,5 @@ export {
   deleteUser,
   sendOTPcode,
   updatePassword,
+  sendVerificationcode,
 };

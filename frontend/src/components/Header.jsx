@@ -45,7 +45,7 @@ const Header = () => {
 
   return (
     <header style={{ background: "#0d0d0d", position: "fixed", top: "0", width:"100%", zIndex:99 }}>
-      <Navbar variant="dark" expand="md" collapseOnSelect style={dark}>
+      <Navbar variant="dark" expand="lg" collapseOnSelect style={dark}>
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand className="logo bolder">
@@ -57,7 +57,7 @@ const Header = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto m-auto">
               <LinkContainer
-                className="white"
+                className="white mx-2"
                 to="/exams"
                 style={{ cursor: "pointer" }}
               >
@@ -71,7 +71,7 @@ const Header = () => {
                 <NavItem eventKey={2}>Courses</NavItem>
               </LinkContainer>
               <LinkContainer
-                className="white"
+                className="white mx-2"
                 to="/summaries"
                 style={{ cursor: "pointer" }}
               >
@@ -84,10 +84,11 @@ const Header = () => {
               <NavDropdown
                 title="Dashboard"
                 id="adminDashboard"
+                className="mx-2"
                 style={{
                   cursor: "pointer",
                   color: "white",
-                  marginLeft: "0.9rem",
+                 
                   fontWeight:"bold",
                 }}
               >
@@ -105,10 +106,11 @@ const Header = () => {
                 <NavDropdown
                   title={userInfoMediquest.name}
                   id="username"
+                  className="mx-2"
                   style={{
                     color: "#75dab4",
                     marginRight: "0.9rem",
-                    marginLeft: "2rem",
+                    
                     fontWeight: "bold",
                   }}
                 >
@@ -123,6 +125,7 @@ const Header = () => {
                   <Nav.Link>
                     <Image
                       src={userInfoMediquest.image}
+                      className="mx-2"
                       alt="user image"
                       style={{
                         width: "30px",

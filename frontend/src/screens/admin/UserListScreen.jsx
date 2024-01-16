@@ -31,9 +31,11 @@ const UserListScreen = () => {
      <div
         style={{
           backgroundColor: "white",
-          height: "86vh",
+          height: "100vh",
           padding: "2rem 5rem",
           color:"black",
+          paddingTop:"8rem"
+          
         }}
       >
       <h1>Users</h1>

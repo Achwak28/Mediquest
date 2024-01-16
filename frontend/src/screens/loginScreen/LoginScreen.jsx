@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Form, Row, Col } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../components/Loader";
 import FormContainer from "../../components/FormContainer";
@@ -20,7 +21,7 @@ const LoginScreen = () => {
   const navigate = useNavigate();
 
   const [login, { isLoading }] = useLoginMutation();
-  const [sendOTP] = useSendOTPMutation();
+  const [sendOTP, { isLoading: loadingOTP }] = useSendOTPMutation();
 
   const { userInfoMediquest } = useSelector((state) => state.auth);
 
@@ -49,10 +50,10 @@ const LoginScreen = () => {
     if (email) {
       const otp = Math.floor(Math.random() * 9000 + 1000);
       const data = { email: { email }, otp: otp };
-      console.log(data);
       try {
         await sendOTP({ recipient_email: email, OTP: otp }).unwrap();
-        localStorage.setItem('otpCode', JSON.stringify(true))
+        localStorage.setItem("otpCode", JSON.stringify(true));
+        setTimeout(() => localStorage.removeItem("otpCode"), 600000);
         navigate("/forgotpassword", { state: data });
       } catch (err) {
         toast.error(err?.data?.message || err.error);
@@ -63,11 +64,11 @@ const LoginScreen = () => {
   };
 
   return (
-    <Row className="login-container">
-      <Col className="login-content mt-3" md={6}>
+    <Row className="login-container ">
+      <Col className="login-content mt-5" md={6}>
         <FormContainer>
           <h1 className="white">Welcome</h1>
-          <p className="white">Sign In to continue to MediQuest</p>
+          <p className="white">Sign In to continue to Medi<span style={{color:"#75dab4"}}>Q</span>uest</p>
           <Form onSubmit={submitHandler}>
             <Form.Group className="my-2 white mt-3" controlId="email">
               <Form.Control
@@ -106,7 +107,20 @@ const LoginScreen = () => {
 
             <StyledButton text="LOGIN" type="submit" />
 
-            {isLoading && <Loader />}
+            {loadingOTP && <Loader style={{ color: "white !important" }} />}
+            {isLoading && (
+              <Spinner
+                animation="border"
+                role="status"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  margin: "auto",
+                  display: "block",
+                  color:"white"
+                }}
+              ></Spinner>
+            )}
           </Form>
 
           <Row className="py-3">

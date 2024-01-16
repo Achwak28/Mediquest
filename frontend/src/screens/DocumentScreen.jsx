@@ -1,10 +1,10 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FaFolderPlus } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa";
+import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import {
   Row,
@@ -15,13 +15,18 @@ import {
   Form,
   Card,
 } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { IoMdEye } from "react-icons/io";
 import { FaDownload } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import Rating from "../components/Rating";
 import { FaArrowRightLong } from "react-icons/fa6";
 import {
   useGetDocumentDetailsQuery,
   useCreateReviewMutation,
+  useDeleteCommentMutation,
+  useGetDownloadDocumentQuery,
+  useDownloadDocumentMutation,
 } from "../slices/documentApiSlice";
 import {
   useCreateCollectionMutation,
@@ -41,7 +46,7 @@ const DocumentScreen = () => {
   const [createCollection, { isLoading: loandingCollectionCreation, error }] =
     useCreateCollectionMutation();
 
-  const [addMoreDocs, { isLoading: loandingAddingToCollection, errorAdd }] =
+  const [addMoreDocs, { isLoading: loandingAddingToCollection }] =
     useAddMoreDocsMutation();
 
   const navigate = useNavigate();
@@ -53,11 +58,52 @@ const DocumentScreen = () => {
     isError,
   } = useGetDocumentDetailsQuery(documentId);
 
+  const [downloadDocument] = useDownloadDocumentMutation()
+  //const {data:downloadedDocument} =   useGetDownloadDocumentQuery(documentId)
+
+
   const { userInfoMediquest } = useSelector((state) => state.auth);
 
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
 
+  const [deleteComment, { isLoading: loadingDelete }] =
+    useDeleteCommentMutation();
+
+    const downloadFile = async () => {
+      try {
+        const res = await axios.get(
+          `/api/documents/${documentId}/download`,
+          { responseType: "blob" }
+        );
+        console.log(res)
+        const blob = new Blob([res.data], { type: res.data.type });
+        const link = document.createElement= "a";
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "file.pdf";
+        // link.download = res.headers["content-disposition"].split("filename=")[1];
+        link.click();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    };
+    const downloadFile1 = async () =>{
+      //console.log(downloadedDocument)
+      console.log("enter")
+      
+      try {
+      const res =  await downloadDocument({documentId})
+      console.log(res)
+      const blob = new Blob([res.data], { type: res.data.type });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "file.pdf";
+      // link.download = res.headers["content-disposition"].split("filename=")[1];
+      link.click();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
   const {
     data,
     isLoading: loadingCollections,
@@ -77,6 +123,18 @@ const DocumentScreen = () => {
       setRating(0);
       setComment("");
       toast.success("Review created successfully");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const deleteReview = async () => {
+    try {
+      await deleteComment({
+        documentId,
+      }).unwrap();
+      refetch();
+      toast.success("Review deleted successfully");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -130,7 +188,7 @@ const DocumentScreen = () => {
         const fileURL = window.URL.createObjectURL(blob);
 
         // Setting various property values
-        let alink = window.createElement("a");
+        let alink = document.createElement= "a";;
         alink.href = fileURL;
         alink.download = "SamplePDF.pdf";
         alink.click();
@@ -143,15 +201,17 @@ const DocumentScreen = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [dialog, setDialog] = useState(false);
 
-  const toggleDialog = () => {
-    setDialog(!dialog);
-  };
 
   return (
     <>
-      <div style={{ backgroundColor: "white", padding: "2rem 5rem" }}>
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "2rem 5rem",
+          paddingTop: "85px",
+        }}
+      >
         <Link className="btn btn-light my-3" to="/exams">
           Go Back
         </Link>
@@ -173,7 +233,7 @@ const DocumentScreen = () => {
               }}
             >
               <Modal
-              size="lg"
+                size="lg"
                 show={show}
                 onHide={handleClose}
                 backdrop="static"
@@ -183,25 +243,24 @@ const DocumentScreen = () => {
                   <Modal.Title>{document.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <Image
-                  src={document.image}
-                  alt={document.name}
-                  
-                  style={{margin:"auto", width:"100%", height:"100%"}}
-                />
+                  <Image
+                    src={document.image}
+                    alt={document.name}
+                    style={{ margin: "auto", width: "100%", height: "100%" }}
+                  />
                 </Modal.Body>
               </Modal>
-             
-              <Col md={4}>
+
+              <Col sm={10} md={4}>
                 <Image
                   src={document.image}
                   alt={document.name}
-                  style={{cursor:"pointer"}}
+                  style={{ cursor: "pointer" }}
                   fluid
                   onClick={handleShow}
                 />
               </Col>
-              <Col md={4}>
+              <Col  sm={12} md={4}>
                 <ListGroup variant="flush">
                   <ListGroup.Item>
                     <h3>{document.name}</h3>
@@ -215,7 +274,7 @@ const DocumentScreen = () => {
 
                   <ListGroup.Item>
                     Description: {document.description}
-                    <button onClick={onButtonClick}>Download PDF</button>
+                    <button onClick={() => downloadFile()}>Download PDF</button>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <IoMdEye
@@ -268,14 +327,28 @@ const DocumentScreen = () => {
                                       addToCollectionHandler(collection._id)
                                     }
                                   >
-                                    <FaFolderPlus
+                                   <FaFolderPlus
                                       size={18}
                                       style={{ cursor: "pointer" }}
                                     />
+                                   
                                   </Button>
                                 </Col>{" "}
                               </Row>
                             ))}
+                             {loandingAddingToCollection && (
+                                      <Spinner
+                                        animation="border"
+                                        role="status"
+                                        style={{
+                                          width: "30px",
+                                          height: "30px",
+                                          margin: "auto",
+                                          display: "block",
+                                          color:"black",
+                                        }}
+                                      ></Spinner>
+                                    ) }
                             <Button
                               type="button"
                               className="btn-block mt-3"
@@ -289,7 +362,20 @@ const DocumentScreen = () => {
                                 border: "transparent",
                               }}
                             >
-                              Add To New Collection
+                              {loandingCollectionCreation ? (
+                                <Spinner
+                                  animation="border"
+                                  role="status"
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    margin: "0 4rem",
+                                    display: "block",
+                                  }}
+                                ></Spinner>
+                              ) : (
+                                "Add To New Collection"
+                              )}
                             </Button>
                           </>
                         ) : (
@@ -318,9 +404,40 @@ const DocumentScreen = () => {
                 <ListGroup variant="flush">
                   {document.reviews.map((review) => (
                     <ListGroup.Item key={review._id}>
-                      <strong>{review.name}</strong>
-                      <Rating value={review.rating} />
-                      <p>{review.createdAt.substring(0, 10)}</p>
+                      <Row>
+                        <Col md={10}>
+                          <strong>{review.name}</strong>
+                          <Rating value={review.rating} />
+                          <p>{review.createdAt.substring(0, 10)}</p>
+                        </Col>
+                        <Col md={2} className="justify-content-end">
+                          {userInfoMediquest &&
+                            userInfoMediquest._id === review.user && (
+                              <Button
+                                variant="danger"
+                                className="btn-sm"
+                                onClick={() => deleteReview()}
+                              >
+                                {loadingDelete ? (
+                                  <Spinner
+                                    animation="border"
+                                    role="status"
+                                    style={{
+                                      width: "20px",
+                                      height: "20px",
+                                      margin: "auto",
+                                      display: "block",
+                                      color: "white",
+                                    }}
+                                  ></Spinner>
+                                ) : (
+                                  <FaTrash color="white" size={20} />
+                                )}
+                              </Button>
+                            )}
+                        </Col>
+                      </Row>
+
                       <p>{review.comment}</p>
                     </ListGroup.Item>
                   ))}

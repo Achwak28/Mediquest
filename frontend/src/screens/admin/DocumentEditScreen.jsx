@@ -82,8 +82,9 @@ const ProductEditScreen = () => {
       <div
         style={{
           backgroundColor: "white",
-          padding: "2rem 5rem",
+          padding: "3rem 5rem",
           color: "black",
+          paddingTop:"6rem"
         }}
       >
         <Link to="/admin/documentlist" className="btn btn-light my-3">

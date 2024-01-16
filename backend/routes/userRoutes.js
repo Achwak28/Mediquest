@@ -12,7 +12,8 @@ import {
   updateUser,
   deleteUser,
   sendOTPcode,
-  updatePassword
+  updatePassword,
+  sendVerificationcode,
 } from "../controllers/userController.js";
 
 import { protect, admin } from "../middleware/authMiddleware.js";
@@ -31,6 +32,7 @@ router
 router.post("/toFav", protect, toFav);
 router.route("/favourites").get(protect,getAllFavorites)
 router.route("/recoveryemail").post(sendOTPcode)
+router.route("/verificationcode").post(sendVerificationcode)
 router.route("/resetpassword").post(updatePassword)
 export default router;
-   
+  

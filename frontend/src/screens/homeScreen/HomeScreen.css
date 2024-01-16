@@ -3,6 +3,7 @@
   margin: 0 !important;
   background-image: url("../../assets/homepage_bg.png");
   height: 100vh;
+  padding-top: 85px;
   overflow-x: hidden;
   color: white;
   display: flex;

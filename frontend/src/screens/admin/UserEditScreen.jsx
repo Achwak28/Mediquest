@@ -52,10 +52,11 @@ const UserEditScreen = () => {
     <>
       <div
         style={{
-          height:"90vh",
+          height:"100vh",
           backgroundColor: "white",
           padding: "2rem 5rem",
           color: "black",
+          paddingTop:"7rem"
         }}
       >
         <Link to="/admin/userlist" className="btn btn-light my-3">

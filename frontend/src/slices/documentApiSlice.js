@@ -1,16 +1,16 @@
 import { DOCS_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
-export const productApiSlice = apiSlice.injectEndpoints({
+export const documentApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getDocuments: builder.query({
-      query: ({ keyword, pageNumber }) => ({
+      query: ({keyword,pageNumber,category}) => ({
         url: DOCS_URL,
-        params: { keyword, pageNumber },
+        params:  {keyword, pageNumber, category} ,
       }),
       keepUnusedDataFor: 5,
       providesTags: ['Documents'],
-    }),
+    }), 
     getDocumentDetails: builder.query({
       query: (id) => ({
         url: `${DOCS_URL}/${id}`,
@@ -54,9 +54,32 @@ export const productApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Document'],
     }),
+    deleteComment: builder.mutation({
+      query: (data) => ({
+        url: `${DOCS_URL}/${data.documentId}/reviews`,
+        method: 'DELETE',
+        body: data,
+      }),
+      invalidatesTags: ['Document'],
+    }),
     getTopProducts: builder.query({
       query: () => `${DOCS_URL}/top`,
       keepUnusedDataFor: 5,
+    }),
+    downloadDocument: builder.mutation({
+      query: (data) => ({
+        url: `${DOCS_URL}/${data.documentId}/download`,
+        method: 'POST',
+        responseType: 'blob',
+      }),
+      
+    }),
+    getDownloadDocument: builder.query({
+      query: (id) => ({
+        url: `${DOCS_URL}/${id}/download`,
+        responseType: 'blob',
+      }),
+     
     }),
   }),
 });
@@ -69,5 +92,8 @@ export const {
   useUploadDocumentImageMutation,
   useDeleteDocumentMutation,
   useCreateReviewMutation,
+  useDeleteCommentMutation,
   useGetTopProductsQuery,
-} = productApiSlice;
+  useGetDownloadDocumentQuery,
+  useDownloadDocumentMutation,
+} = documentApiSlice;

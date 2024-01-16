@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import {
@@ -12,7 +12,6 @@ import {
 } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
@@ -36,19 +35,13 @@ const OrderScreen = () => {
     error,
   } = useGetCollectionDetailsQuery(collectionId);
 
-  const [deleteCollection, { isLoading: loadingDelete }] =
+  const [deleteCollection] =
     useDeleteCollectionMutation();
 
     const [deleteDocFromCollection] = useDeleteDocFromCollectionMutation();
 
   const [updateCollection, { isLoading: loadingUpdate }] =
     useUpdateCollectionMutation();
-
-  const { userInfo } = useSelector((state) => state.auth);
-
-  function onError(err) {
-    toast.error(err.message);
-  }
 
   const deleteCollectionHandler = async (id) => {
     if (window.confirm("Are you sure")) {
@@ -74,7 +67,7 @@ const OrderScreen = () => {
         toast.error(err?.data?.message || err.error);
       }
     }
-  }
+  } 
 
   const editCollectionName = async (e) => {
     e.preventDefault();
@@ -92,12 +85,23 @@ const OrderScreen = () => {
   };
 
   return isLoading ? (
-    <Loader />
+    <div style={{marginTop:"3rem"}} className="mt-4">
+       <Loader className="mt-4" />
+    </div>
+   
   ) : error ? (
     <Message variant="danger">{error.data.message}</Message>
   ) : (
     <>
-      <Row className="justify-content-center my-3" style={{ color: "white" }}>
+    <div
+        className="collection-container"
+        style={{
+          backgoundColor: "#f1f2f5",
+        }}
+      >
+
+   
+      <Row className="justify-content-center my-3" style={{ paddingTop: "85px", textAlign:"start", fontWeight:"700" }}>
         <Col md={4}>
           <h1> {collection.title}</h1>
         </Col>
@@ -171,7 +175,7 @@ const OrderScreen = () => {
       <Row className="justify-content-center mb-5" style={{marginBottom:"5rem"}}>
         <Col md={8}>
           <Card>
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" style={{textAlign:"start"}}>
               <ListGroup.Item>
                 <p>
                   <strong>Name: </strong> {collection.user.name}
@@ -221,6 +225,7 @@ const OrderScreen = () => {
           </Card>
         </Col>
       </Row>
+      </div>
     </>
   );
 };

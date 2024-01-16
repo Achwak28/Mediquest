@@ -6,6 +6,7 @@ import {
   updateDocument,
   deleteDocument,
   createDocumentReview,
+  deleteComment,
   getTopDocuments,
   getAllFavorites,
   downloadFile,
@@ -21,8 +22,9 @@ router
   .get(getDocumentById)
   .put(protect, admin, updateDocument)
   .delete(protect, admin, deleteDocument);
-router.route("/:id/reviews").post(protect, createDocumentReview);
-router.route("/:id/download").get(downloadFile)
+router.route("/:id/reviews").post(protect, createDocumentReview).delete(protect, deleteComment);
+router.route("/:id/download").post(protect,downloadFile)
+router.route("/:id/download").get(protect,downloadFile)
 router.route("/allFav").get(protect,getAllFavorites)
 
 export default router;

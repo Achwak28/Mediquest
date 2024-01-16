@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGetDocumentsQuery } from "../../slices/documentApiSlice";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
@@ -16,44 +16,47 @@ const ExamsScreen = () => {
   });
 
   return (
-    <> 
+    <>
       <Row className="exams-row">
-        <Col className="filter-side" md={3} style={{height:"88vh"}}>
+        <Col className="filter-side" md={2} style={{ height: "100vh" }}>
           first
         </Col>
-        {isLoading ? (
-          <Loader />
-        ) : isError ? (
-          <Message variant="danger">
-            {isError?.data?.message || isError?.error}
-          </Message>
-        ) : (
-          <Col
-            className="content-side"
-            style={{ backgroundColor: "#161616" }}
-            md={9}
-          >
-            <Row className="p-3 mt-3"> 
-              <Col>
-                <strong>Results</strong>
-              </Col>
-              <Col>
-                <strong></strong>
-              </Col>
+
+        <Col
+          className="content-side"
+          style={{ backgroundColor: "#161616" }}
+          md={10}
+        >
+          <Row className="p-3 mt-3">
+            <Col>
+              <strong>Results</strong>
+            </Col>
+            <Col>
+              <strong></strong>
+            </Col>
+          </Row>
+          {isLoading ? (
+            <Loader />
+          ) : isError ? (
+            <Message variant="danger">
+              {isError?.data?.message || isError?.error}
+            </Message>
+          ) : (
+            <Row className="m-1">
+              {data?.documents.map((document) => (
+                <Col key={document._id} sm={12} md={4} lg={5} xl={3}>
+                  <ExamCard document={document} className="m-2" />
+                </Col>
+              ))}
             </Row>
-            <Row className="m-2">
-              {
-                   data?.documents.map((document) => (
-                    <Col key={document._id} sm={12} md={4} lg={5} xl={3}>
-                    <ExamCard document={document} className="m-3" />
-                    </Col>
-                  ))
-              }
-             
-            </Row>
-          </Col>
-        )
-        }
+          )}
+
+          <Paginate
+            pages={data?.pages}
+            page={data?.page}
+            keyword={keyword ? keyword : ""}
+          />
+        </Col>
       </Row>
     </>
   );

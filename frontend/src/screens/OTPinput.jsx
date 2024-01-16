@@ -17,7 +17,7 @@ export default function () {
   const [OTPinput, setOTPinput] = useState([0, 0, 0, 0]);
   const [disable, setDisable] = useState(true);
 
-  const email = data.email.email;
+  const email = data.email.email; 
 
   const [sendOTP, { isLoading }] = useSendOTPMutation();
 
@@ -29,6 +29,7 @@ export default function () {
     } else {
       try {
         await sendOTP({ recipient_email: email, OTP: OTP }).unwrap();
+        setTimeout(() => setOTPCode(null), 300000)
         setDisable(true);
         setTimer(60);
         toast.success("A new OTP has succesfully been sent to your email.");
@@ -43,10 +44,11 @@ export default function () {
       const data = { email: { email } };
       localStorage.removeItem('otpCode')
       localStorage.setItem('resetPassword', JSON.stringify(true))
+      setTimeout(() => localStorage.removeItem('resetPassword'), 600000)
       navigate("/resetpassword", { state: data });
     } else {
       toast.error(
-        "The code you have entered is not correct, try again or re-send the link"
+        "The code you have entered is not correct, try again or re-send the code"
       );
     }
   };

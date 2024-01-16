@@ -101,6 +101,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data,
       }), 
     }),
+    sendCode: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/verificationcode`,
+        method: 'POST',
+        body: data,
+      }), 
+    }),
   }),
 });
 
@@ -119,4 +126,5 @@ export const {
   useGetUserDetailsQuery,
   useSendOTPMutation,
   useResetPasswordMutation,
+  useSendCodeMutation,
 } = usersApiSlice;

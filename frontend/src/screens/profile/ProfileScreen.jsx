@@ -146,6 +146,7 @@ const ProfileScreen = () => {
                       type="email"
                       placeholder="Enter email"
                       value={email}
+                      disabled
                       onChange={(e) => setEmail(e.target.value)}
                     ></Form.Control>
                   </Form.Group>

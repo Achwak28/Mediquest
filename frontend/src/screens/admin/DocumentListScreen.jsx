@@ -52,9 +52,10 @@ const DocumentListScreen = () => {
       <div
         style={{
           backgroundColor: "white",
-          height: "86vh",
+          height: "100vh",
           padding: "2rem 5rem",
           color:"black",
+          paddingTop:"8rem",
         }}
       >
         <Row
@@ -125,7 +126,8 @@ const DocumentListScreen = () => {
                       <Button
                         variant="danger"
                         className="btn-sm"
-                        onClick={() => deleteHandler(document._id)}
+                        onClick={() => {deleteHandler(document._id)
+                        console.log(data)}}
                       >
                         <FaTrash style={{ color: "white" }} />
                       </Button>

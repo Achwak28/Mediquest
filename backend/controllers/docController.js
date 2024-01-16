@@ -12,7 +12,7 @@ const getDocSimple = asyncHandler(async (req, res) => {
   res.json(documents);
 });
 
-const getDocs = asyncHandler(async (req, res) => {
+const getDocs1 = asyncHandler(async (req, res) => {
   const pageSize = 8; //process.env.PAGINATION_LIMIT
   const page = Number(req.query.pageNumber) || 1;
 
@@ -30,9 +30,43 @@ const getDocs = asyncHandler(async (req, res) => {
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
-  res.json({ documents: documents, page, pages: Math.ceil(count / pageSize) });
+  res.json({ documents, page, pages: Math.ceil(count / pageSize) });
 });
 
+const getDocs = asyncHandler(async (req, res) => {
+ const {category} = req.query
+ const pageSize = 8; //process.env.PAGINATION_LIMIT
+ const page = Number(req.query.pageNumber) || 1;
+
+ const keyword = req.query.keyword
+   ? {
+       name: {
+         $regex: req.query.keyword,
+         $options: "i",
+       },
+     }
+   : {};
+
+ if(category){
+
+  const countCategory = await Document.countDocuments({ ...keyword, category:`${category}`});
+  const categorizedDocs = await Document.find({ ...keyword, category:`${category}`})
+  .limit(pageSize)
+  .skip(pageSize * (page - 1));
+  res.json({ categorizedDocs, page, pages: Math.ceil(countCategory / pageSize) });
+ }else {
+  const count = await Document.countDocuments({ ...keyword });
+  const documents = await Document.find({ ...keyword })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  res.json({ documents, page, pages: Math.ceil(count / pageSize) });
+ }
+ 
+   
+
+ 
+});
 // description get SINGLE PRODUCT BY id
 //route GET /api/products/:id
 //access PUBLIC
@@ -62,13 +96,16 @@ const uploadFile = asyncHandler(async (req, res) => {
 // @route GET /api/documents/:id/download
 // @access Private/Admin
 const downloadFile = asyncHandler(async (req, res) => {
+  console.log("enter")
   const document = await Document.findById(req.params.id);
   if (!document) {
     res.status(404);
     throw new Error("Document not Found !");
-  }
+  } 
   const file = document.file;
-  const filePath = path.join(__dirname, `../${file}`);
+  const filePath = path.join(__dirname, `frontend/public/${file}`);
+  console.log(__dirname)
+  console.log(filePath)
   res.download(filePath);
 });
 
@@ -80,7 +117,7 @@ const createDocument = asyncHandler(async (req, res) => {
     name: "Document Name",
     user: req.user._id,
     image: "/images/doc_image.png",
-    file:"/sample.pdf",
+    file: "/sample.pdf",
     year: "1",
     category: "course",
     numLikes: 0,
@@ -96,8 +133,7 @@ const createDocument = asyncHandler(async (req, res) => {
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 const updateDocument = asyncHandler(async (req, res) => {
-  const { name, year, description, image, category } =
-    req.body;
+  const { name, year, description, image, category } = req.body;
 
   const document = await Document.findById(req.params.id);
 
@@ -124,15 +160,15 @@ const deleteDocument = asyncHandler(async (req, res) => {
 
   if (document) {
     await Document.deleteOne({ _id: document._id });
-    res.json({ message: 'Document removed' });
+    res.json({ message: "Document removed" });
   } else {
     res.status(404);
-    throw new Error('Document not found');
+    throw new Error("Document not found");
   }
 });
 
 // @desc    Create new review
-// @route   POST /api/products/:id/reviews
+// @route   POST /api/documents/:id/reviews
 // @access  Private
 const createDocumentReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body;
@@ -153,7 +189,7 @@ const createDocumentReview = asyncHandler(async (req, res) => {
       name: req.user.name,
       rating: Number(rating),
       comment,
-      user: req.user._id, 
+      user: req.user._id,
     };
 
     document.reviews.push(review);
@@ -171,6 +207,40 @@ const createDocumentReview = asyncHandler(async (req, res) => {
     throw new Error("Document not found");
   }
 });
+
+// @desc    Create delete comment
+// @route   DELETE /api/documents/:id/reviews
+// @access  Private
+const deleteComment = asyncHandler(async (req, res) => {
+  const document = await Document.findById(req.params.id);
+
+  if (document) {
+    const alreadyReviewed = document.reviews.find(
+      (r) => r.user.toString() === req.user._id.toString()
+    );
+
+    if (alreadyReviewed) {
+     
+      const review = {
+        name: req.user.name,
+        rating: alreadyReviewed.rating,
+        comment: alreadyReviewed.comment,
+        user: req.user._id,
+      };
+      document.reviews.pull(alreadyReviewed);
+      await document.save();
+      res.status(201).json({ message: "Comment deleted", document });
+    }else {
+      res.status(404);
+      throw new Error("Review not found");
+    }
+  } else {
+    res.status(404);
+    throw new Error("Document not found");
+  }
+ 
+});
+
 const getAllFavorites = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   try {
@@ -181,22 +251,23 @@ const getAllFavorites = asyncHandler(async (req, res) => {
     throw new Error(err.message);
   }
 });
-// @desc    Get top rated products
-// @route   GET /api/products/top
+// @desc    Get top rated documents
+// @route   GET /api/documents/top
 // @access  Public
 const getTopDocuments = asyncHandler(async (req, res) => {
   const documents = await Document.find({}).sort({ rating: -1 }).limit(3);
 
   res.json(documents);
 });
-export {   
+export {
   getDocs,
-  getDocumentById, 
+  getDocumentById,
   downloadFile,
-  createDocument, 
-  updateDocument, 
+  createDocument,
+  updateDocument,
   deleteDocument,
   createDocumentReview,
+  deleteComment,
   getTopDocuments,
   getAllFavorites,
 };
