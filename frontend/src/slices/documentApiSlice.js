@@ -70,14 +70,13 @@ export const documentApiSlice = apiSlice.injectEndpoints({
       query: (data) => ({
         url: `${DOCS_URL}/${data.documentId}/download`,
         method: 'POST',
-        responseType: 'blob',
       }),
       
     }),
     getDownloadDocument: builder.query({
       query: (id) => ({
         url: `${DOCS_URL}/${id}/download`,
-        responseType: 'blob',
+        responseType: 'blob'
       }),
      
     }),

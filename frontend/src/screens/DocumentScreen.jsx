@@ -16,6 +16,7 @@ import {
   Card,
 } from "react-bootstrap";
 import { Spinner } from "react-bootstrap";
+import SpinnerDownload from 'react-bootstrap/Spinner';
 import { IoMdEye } from "react-icons/io";
 import { FaDownload } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
@@ -42,6 +43,7 @@ const DocumentScreen = () => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [showCols, setShowCol] = useState(false);
+  const [loadingDownload, setLoading] = useState(false);
 
   const [createCollection, { isLoading: loandingCollectionCreation, error }] =
     useCreateCollectionMutation();
@@ -52,7 +54,7 @@ const DocumentScreen = () => {
   const navigate = useNavigate();
 
   const {
-    data: document,
+    data,
     isLoading,
     refetch,
     isError,
@@ -70,33 +72,17 @@ const DocumentScreen = () => {
   const [deleteComment, { isLoading: loadingDelete }] =
     useDeleteCommentMutation();
 
-    const downloadFile = async () => {
-      try {
-        const res = await axios.get(
-          `/api/documents/${documentId}/download`,
-          { responseType: "blob" }
-        );
-        console.log(res)
-        const blob = new Blob([res.data], { type: res.data.type });
-        const link = document.createElement= "a";
-        link.href = window.URL.createObjectURL(blob);
-        link.download = "file.pdf";
-        // link.download = res.headers["content-disposition"].split("filename=")[1];
-        link.click();
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
-    };
-    const downloadFile1 = async () =>{
-      //console.log(downloadedDocument)
-      console.log("enter")
-      
+  
+    const downloadFile2 = async (e) =>{
+      e.preventDefault()
       try {
       const res =  await downloadDocument({documentId})
-      console.log(res)
-      const blob = new Blob([res.data], { type: res.data.type });
+
+      //const blob = await res.blob();
+      const blob = res.data 
+
       const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
+      link.href = window.URL.createObjectURL(new Blob([res.data], { type: res.data.type }));
       link.download = "file.pdf";
       // link.download = res.headers["content-disposition"].split("filename=")[1];
       link.click();
@@ -104,8 +90,44 @@ const DocumentScreen = () => {
         toast.error(err?.data?.message || err.error);
       }
     }
+
+    const downloadFile = async (e) =>{
+      e.preventDefault()
+      setLoading(true)
+        axios({
+          url:`/api/documents/${documentId}/download`,
+          method: "GET",
+          responseType: "blob",
+        }).then((response) => {
+          console.log(response)
+          console.log(response.file)
+          setLoading(false)
+          // Access the response data directly
+          const blob = response.data;
+          // Create blob link to download
+          const url = window.URL.createObjectURL(
+            new Blob([blob]),
+          );
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute(
+            'download',
+            `FileName.pdf`,
+          );
+      
+          // Append to html link element page
+          document.body.appendChild(link);
+          setLoading(false)
+          // Start download
+          link.click();
+      
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
+        });
+    
+    }
   const {
-    data,
+    data: collections,
     isLoading: loadingCollections,
     errorCollections,
   } = useGetMyCollectionsQuery();
@@ -145,8 +167,8 @@ const DocumentScreen = () => {
       await addMoreDocs({
         collectionId: id,
         _id: documentId,
-        name: document.name,
-        image: document.image,
+        name: data.name,
+        image: data.image,
       }).unwrap();
       navigate(`/collection/${id}`);
       toast.success("Added to collection successfully");
@@ -172,6 +194,7 @@ const DocumentScreen = () => {
 
   const btnStyle = {
     padding: "1rem 3rem",
+    margin: "auto",
     color: "black",
     backgroundColor: "#75dab4",
     borderRadius: "5px",
@@ -180,22 +203,7 @@ const DocumentScreen = () => {
     border: "transparent",
   };
 
-  const onButtonClick = () => {
-    // using Java Script method to get PDF file
-    fetch("SamplePDF.pdf").then((response) => {
-      response.blob().then((blob) => {
-        // Creating new object of PDF file
-        const fileURL = window.URL.createObjectURL(blob);
-
-        // Setting various property values
-        let alink = document.createElement= "a";;
-        alink.href = fileURL;
-        alink.download = "SamplePDF.pdf";
-        alink.click();
-      });
-    });
-  };
-
+ 
   // image resizing
   const [show, setShow] = useState(false);
 
@@ -210,6 +218,7 @@ const DocumentScreen = () => {
           backgroundColor: "white",
           padding: "2rem 5rem",
           paddingTop: "85px",
+          minHeight:"100vh"
         }}
       >
         <Link className="btn btn-light my-3" to="/exams">
@@ -224,10 +233,10 @@ const DocumentScreen = () => {
           </Message>
         ) : (
           <>
-            <Meta title={document.name} />
+            <Meta title={data.name} />
             <Row
               style={{
-                padding: "2rem 5rem",
+                padding: "2rem",
                 color: "black",
                 backgroundColor: "white",
               }}
@@ -240,58 +249,61 @@ const DocumentScreen = () => {
                 keyboard={false}
               >
                 <Modal.Header closeButton>
-                  <Modal.Title>{document.name}</Modal.Title>
+                  <Modal.Title>{data.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <Image
-                    src={document.image}
-                    alt={document.name}
+                    src={data.image}
+                    alt={data.name}
                     style={{ margin: "auto", width: "100%", height: "100%" }}
                   />
                 </Modal.Body>
               </Modal>
 
-              <Col sm={10} md={4}>
+              <Col sm={12} md={6} lg={4}>
                 <Image
-                  src={document.image}
-                  alt={document.name}
+                  src={data.image}
+                  alt={data.name}
                   style={{ cursor: "pointer" }}
                   fluid
                   onClick={handleShow}
                 />
               </Col>
-              <Col  sm={12} md={4}>
+              <Col  sm={12} md={6} lg={4}>
                 <ListGroup variant="flush">
                   <ListGroup.Item>
-                    <h3>{document.name}</h3>
+                    <h3>{data.name}</h3>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Rating
-                      value={document.rating}
-                      text={`${document.numReviews} reviews`}
+                      value={data.rating}
+                      text={`${data.numReviews} reviews`}
                     />
                   </ListGroup.Item>
 
                   <ListGroup.Item>
-                    Description: {document.description}
-                    <button onClick={() => downloadFile()}>Download PDF</button>
+                    Description: {data.description}
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <IoMdEye
                       color="rgb(72 175 140)"
+                      onClick={handleShow}
                       size={40}
                       style={{ marginRight: "1rem", cursor: "pointer" }}
                     />
                     <FaDownload
+                    onClick={(e) => downloadFile(e)}
                       color="rgb(72 175 140)"
                       size={28}
                       style={{ cursor: "pointer" }}
-                    />
+                    /> {" "}
+                    {loadingDownload && <Spinner animation="border" variant="dark" />}
                   </ListGroup.Item>
                 </ListGroup>
               </Col>
-              <Col md={4}>
-                <Card style={{ color: "black" }}>
+              <Col sm={12} md={12} lg={4}>
+                <Card className="d-flex align-items-center  
+                        justify-content-center rounded" style={{ color: "black" }}>
                   <ListGroup variant="flush">
                     <ListGroup.Item>
                       <button
@@ -311,12 +323,12 @@ const DocumentScreen = () => {
                           </Message>
                         ) : userInfoMediquest ? (
                           <>
-                            {data?.map((collection) => (
+                            {collections?.map((collection) => (
                               <Row className="p-2 mt-2">
-                                <Col md={7}>
+                                <Col md={9}>
                                   <strong>{collection.title}</strong>
                                 </Col>
-                                <Col>
+                                <Col md={2}>
                                   <Button
                                     style={{
                                       backgroundColor: "#0b1e33",
@@ -353,8 +365,8 @@ const DocumentScreen = () => {
                               type="button"
                               className="btn-block mt-3"
                               onClick={addToNewCollectionHandler}
-                              style={{
-                                padding: "0.5rem 1rem",
+                              style={{                    
+                                padding: "0.5rem 2rem",
                                 color: "#75dab4",
                                 backgroundColor: "black",
                                 borderRadius: "5px",
@@ -393,16 +405,16 @@ const DocumentScreen = () => {
             <Row
               className="review"
               style={{
-                padding: "2rem 5rem",
+                padding: "2rem",
                 color: "black",
                 margin: "auto",
               }}
             >
-              <Col md={10}>
+              <Col md={12} lg={8}>
                 <h2>Reviews</h2>
-                {document.reviews.length === 0 && <Message>No Reviews</Message>}
+                {data.reviews.length === 0 && <Message>No Reviews</Message>}
                 <ListGroup variant="flush">
-                  {document.reviews.map((review) => (
+                  {data.reviews.map((review) => (
                     <ListGroup.Item key={review._id}>
                       <Row>
                         <Col md={10}>

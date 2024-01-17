@@ -24,6 +24,8 @@ const ProfileScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [image, setImage] = useState();
   const [isActive, setIsActive] = useState("profile");
+  const [width, setWidth] = useState(window.innerWidth);
+  const [height, setHeight] = useState("100vh");
 
   const { userInfoMediquest } = useSelector((state) => state.auth);
 
@@ -32,8 +34,19 @@ const ProfileScreen = () => {
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
-
+    useEffect(() => {
+      function handleResize() {
+        setWidth(window.innerWidth);
+      }
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, [width]);
   useEffect(() => {
+    if (width < 768){
+      setHeight("20vh")
+    } else{
+      setHeight("100vh")
+    };
     setName(userInfoMediquest.name);
     setEmail(userInfoMediquest.email);
     setImage(userInfoMediquest.image);
@@ -41,6 +54,7 @@ const ProfileScreen = () => {
     userInfoMediquest.email,
     userInfoMediquest.name,
     userInfoMediquest.image,
+    width
   ]);
 
   const uploadFileHandler = async (e) => {
@@ -75,25 +89,27 @@ const ProfileScreen = () => {
     }
   };
 
-  return (
+  return ( 
     <>
       <Row className="profile-row pt-5">
-        <Col className="profile-sidebar p-5" md={3} style={{ height: "100vh" }}>
+        <Col className="profile-sidebar p-3" md={2} style={{ height: `${height}` }}>
           <Link
             to="/profile/userinfo"
-            className="mt-5"
+            className='profile-sidebar-item'
             onClick={() => setIsActive("profile")}
           >
             <FaUser /> User Informations
           </Link>
           <Link
             to="/profile/favourites"
+            className='profile-sidebar-item'
             onClick={() => setIsActive("favourites")}
           >
             <FaHeart /> Liked
           </Link>
           <Link
             to="/profile/collections"
+            className='profile-sidebar-item'
             onClick={() => setIsActive("collections")}
           >
             <IoIosFolderOpen /> Collections
@@ -102,8 +118,8 @@ const ProfileScreen = () => {
 
         <Col
           className="content-side"
-          style={{ backgroundColor: "#161616" }}
-          md={9}
+          style={{ backgroundColor: "#161616" , minHeight: "100vh"}}
+          md={10}
         >
           {isActive === "profile" ? (
             <Row className="m-5">

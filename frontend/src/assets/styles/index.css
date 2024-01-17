@@ -1,6 +1,6 @@
 *{
   font-family: 'Poppins', sans-serif;
-  
+  scroll-behavior: smooth;
 }
 body {
   background-color: #0d0d0d;
@@ -108,11 +108,11 @@ button.btn-block.btn.btn-primary {
 }
 .collection-container{
   background-color: #f1f2f5 !important;
-  height: fit-content;
   overflow: scroll;
   overflow-x: hidden;
   text-align: center;
   color: black;
+  height:100vh;
 }
 .container-forgot {
   background-color: #f1f2f5 !important;
@@ -157,3 +157,4 @@ button.btn-block.btn.btn-primary {
   border-color: #38b58b;
   padding: 0.8rem 0.2rem;
 }
+

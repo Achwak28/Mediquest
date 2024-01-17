@@ -44,7 +44,7 @@ const ExamsScreen = () => {
           ) : (
             <Row className="m-1">
               {data?.documents.map((document) => (
-                <Col key={document._id} sm={12} md={4} lg={5} xl={3}>
+                <Col key={document._id} sm={12}  md={5} lg={4} xl={3}>
                   <ExamCard document={document} className="m-2" />
                 </Col>
               ))}

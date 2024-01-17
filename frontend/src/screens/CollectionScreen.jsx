@@ -22,7 +22,7 @@ import {
   useDeleteDocFromCollectionMutation,
 } from "../slices/collectionsApiSlice";
 
-const OrderScreen = () => {
+const CollectionScreen = () => {
   const { id: collectionId } = useParams();
   const [title, setTitle] = useState("");
   const [showInput, setShowInput] = useState(false);
@@ -84,8 +84,17 @@ const OrderScreen = () => {
     }
   };
 
-  return isLoading ? (
-    <div style={{marginTop:"3rem"}} className="mt-4">
+  return <>
+  
+    <div
+        className="collection-container"
+        style={{
+          backgoundColor: "#f1f2f5",
+          paddingTop: "85px",
+        }}
+      >
+     {isLoading ? (
+    <div style={{marginTop:"10vh"}} className="mt-4">
        <Loader className="mt-4" />
     </div>
    
@@ -93,17 +102,9 @@ const OrderScreen = () => {
     <Message variant="danger">{error.data.message}</Message>
   ) : (
     <>
-    <div
-        className="collection-container"
-        style={{
-          backgoundColor: "#f1f2f5",
-        }}
-      >
-
-   
-      <Row className="justify-content-center my-3" style={{ paddingTop: "85px", textAlign:"start", fontWeight:"700" }}>
+     <Row className="justify-content-center my-3" style={{  textAlign:"start", fontWeight:"700" }}>
         <Col md={4}>
-          <h1> {collection.title}</h1>
+          <h1 style={{fontWeight:"bold"}}>  {collection.title}</h1>
         </Col>
 
         <Col md={2}>
@@ -225,9 +226,12 @@ const OrderScreen = () => {
           </Card>
         </Col>
       </Row>
+    </>)}
+   
+     
       </div>
-    </>
-  );
+   
+  </>
 };
 
-export default OrderScreen;
+export default CollectionScreen;

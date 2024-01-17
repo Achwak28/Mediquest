@@ -1,53 +1,44 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
-import { useParams } from "react-router-dom";
 import Loader from "../../components/Loader";
-import {
-  useProfileMutation,
-  useGetUserProfileQuery,
-} from "../../slices/usersApiSlice";
-import { useGetDocumentsQuery } from "../../slices/documentApiSlice";
+import { useGetUserProfileQuery } from "../../slices/usersApiSlice";
 import "./ProfileScreen.css";
 import ExamCard from "../../components/ExamCard";
+import Message from "../../components/Message";
 import "../exams/ExamsSCreen.css";
 
 const ProfileScreen = () => {
-  const { pageNumber, keyword } = useParams();
-  const { data: userProfile, isLoadingUserProfile } = useGetUserProfileQuery();
-
-  const {
-    data: documents,
-    isLoading,
-    isError,
-  } = useGetDocumentsQuery({
-    keyword,
-    pageNumber,
-  });
-
-  const [updateProfile, { isLoading: loadingUpdateProfile }] =
-    useProfileMutation();
+  const { data: userProfile, isLoading, error } = useGetUserProfileQuery();
 
   return (
     <>
       <Row className="exams-row">
         <Col
           className="content-side"
-          style={{ backgroundColor: "#161616" }}
-          md={9}
+          style={{ backgroundColor: "#161616",  minHeight:"100vh"}}
+        
         >
-          <Row className="p-3 mt-3">
+          <Row className="p-3 mt-2">
             <Col>
-              <strong>Favourites</strong>
+              <h2>Favourites</h2>
             </Col>
           </Row>
 
-          {isLoadingUserProfile ? (
+          {isLoading ? (
             <Loader />
+          ) : error ? (
+            <Message variant="danger">{error.data.message}</Message>
+          ) : userProfile?.favourites.length === 0 ? (
+            <Row className="justify-content-center">
+              <Col md={10}>
+                <Message>You have no Favourites !</Message>
+              </Col>
+            </Row>
           ) : (
-            <Row className="p-1 m-2 justify-content-center">
+            <Row className="  justify-content-center">
               {userProfile?.favourites.map((document) => (
-                <Col key={document._id}>
-                  <ExamCard document={document} className="m-3" />
+                <Col key={document._id} sm={6} md={5} lg={4} xl={3}>
+                  <ExamCard document={document} />
                 </Col>
               ))}
             </Row>

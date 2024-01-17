@@ -106,7 +106,7 @@ const downloadFile = asyncHandler(async (req, res) => {
   const filePath = path.join(__dirname, `frontend/public/${file}`);
   console.log(__dirname)
   console.log(filePath)
-  res.download(filePath);
+  res.download(filePath, file);
 });
 
 // @desc    Create a product
