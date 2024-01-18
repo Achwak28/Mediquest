@@ -44,7 +44,7 @@ const DocumentScreen = () => {
   const [comment, setComment] = useState("");
   const [showCols, setShowCol] = useState(false);
   const [loadingDownload, setLoading] = useState(false);
-
+ 
   const [createCollection, { isLoading: loandingCollectionCreation, error }] =
     useCreateCollectionMutation();
 
@@ -93,14 +93,14 @@ const DocumentScreen = () => {
 
     const downloadFile = async (e) =>{
       e.preventDefault()
-      setLoading(true)
+      if(userInfoMediquest){
+        setLoading(true)
         axios({
           url:`/api/documents/${documentId}/download`,
           method: "GET",
           responseType: "blob",
         }).then((response) => {
-          console.log(response)
-          console.log(response.file)
+         
           setLoading(false)
           // Access the response data directly
           const blob = response.data;
@@ -124,6 +124,10 @@ const DocumentScreen = () => {
           // Clean up and remove the link
           link.parentNode.removeChild(link);
         });
+    
+      } else {
+        toast.error("please sign in to your account to enable downloads.")
+      }
     
     }
   const {
@@ -229,7 +233,7 @@ const DocumentScreen = () => {
           <Loader />
         ) : isError ? (
           <Message variant="danger">
-            {isError?.data?.message || isError?.error}
+            "Something went wrong, please try again later!"
           </Message>
         ) : (
           <>
@@ -280,8 +284,12 @@ const DocumentScreen = () => {
                       text={`${data.numReviews} reviews`}
                     />
                   </ListGroup.Item>
+                  <ListGroup.Item>
+                  Year : <span style={{fontWeight:"bold"}}>{data.year} </span>
+                  </ListGroup.Item>
 
                   <ListGroup.Item>
+                   
                     Description: {data.description}
                   </ListGroup.Item>
                   <ListGroup.Item>

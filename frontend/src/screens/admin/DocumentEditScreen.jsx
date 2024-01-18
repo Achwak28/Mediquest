@@ -129,18 +129,6 @@ const ProductEditScreen = () => {
                   onChange={(e) => setName(e.target.value)}
                 ></Form.Control>
               </Form.Group>
-
-              <Form.Group controlId="year">
-                <Form.Label>Year</Form.Label>
-                <Form.Control
-                  style={{ color: "black" }}
-                  type="number"
-                  placeholder="Enter year"
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-
               <Form.Group controlId="image">
                 <Form.Label>Image</Form.Label>
                 <Form.Control
@@ -158,6 +146,18 @@ const ProductEditScreen = () => {
 
                 {loadingUpload && <Loader />}
               </Form.Group>
+              <Form.Group controlId="year">
+                <Form.Label>Year</Form.Label>
+                <Form.Control
+                  style={{ color: "black" }}
+                  type="number"
+                  placeholder="Enter year"
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
+
+             
 
               <Form.Group controlId="file">
                 <Form.Label>file</Form.Label>
@@ -177,23 +177,16 @@ const ProductEditScreen = () => {
                 {loadingUploadFile && <Loader />}
               </Form.Group>
 
-              {/*<Form.Group controlId="category">
-                <Form.Label>Category</Form.Label>
-                <Form.Control
-                  style={{ color: "black" }}
-                  type="text"
-                  placeholder="Enter category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                ></Form.Control>
-              </Form.Group>*/}
+             
 
               <Form.Group controlId="categorySelector">
                 <Form.Label>Category</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   onChange={(e) => setCategory(e.target.value)}
+                  value={category}
                 >
+                  <option value="">Select Category</option>
                   <option value="course">course</option>
                   <option value="exam">exam</option>
                   <option value="summary">summary</option>

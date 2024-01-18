@@ -1,13 +1,11 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import path from "path";
-//import products from './data/products.js'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import collectionRoutes from './routes/collectionRoutes.js'
 import docRoutes from './routes/docRoutes.js'
 import userRoutes from './routes/userRoutes.js'
-import orderRoutes from "./routes/orderRoutes.js"
 import uploadRoutes from './routes/uploadRoutes.js'
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'
 import connectDB from './config/db.js'
@@ -34,13 +32,13 @@ app.use('/api/users', userRoutes)
 app.use('/api/collections', collectionRoutes) 
 app.use('/api/upload', uploadRoutes)  
 
-app.get('/api/config/paypal', (req,res) =>  res.send({ clientId: process.env.PAYPAL_CLIENT_ID}))
+
 
 // set dirname to current directory
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
-//app.use('/uploads/uploadpdf', express.static(path.join(__dirname, '/uploads/files')));
- 
+
+  
 if (process.env.NODE_ENV === 'production') {
     const __dirname = path.resolve();
     app.use('/uploads', express.static('/var/data/uploads'));
