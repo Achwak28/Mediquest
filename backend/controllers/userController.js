@@ -2,9 +2,9 @@ import User from "../models/userModel.js";
 import Document from "../models/docModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import generateToken from "../utils/generateToken.js";
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 //import validator from "email-validator"
-import EmailValidator from "email-deep-validator"
+import EmailValidator from "email-deep-validator";
 
 const emailValidator = new EmailValidator();
 
@@ -38,6 +38,7 @@ const loginUser = asyncHandler(async (req, res) => {
 //access PUBLIC
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
+  const minLength = 8;
 
   const userExists = await User.findOne({ email });
 
@@ -45,11 +46,15 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User already exists");
   }
+  if (!password || password.length < minLength) {
+    res.status(400);
+    throw new Error( `Password must be at least ${minLength} characters long`);
+  }
+  const { wellFormed, validDomain, validMailbox } = await emailValidator.verify(
+    email
+  );
 
-  
-const { wellFormed, validDomain, validMailbox } = await emailValidator.verify(email);
-
-  if(validDomain & wellFormed & (validMailbox !== null)){
+  if (validDomain & wellFormed & (validMailbox !== null)) {
     const user = await User.create({
       name,
       email,
@@ -59,7 +64,7 @@ const { wellFormed, validDomain, validMailbox } = await emailValidator.verify(em
     });
     if (user) {
       generateToken(res, user._id);
-  
+
       res.status(201).json({
         _id: user._id,
         name: user.name,
@@ -72,16 +77,10 @@ const { wellFormed, validDomain, validMailbox } = await emailValidator.verify(em
       res.status(400);
       throw new Error("Invalid user data");
     }
-  } else{
+  } else {
     res.status(400);
-      throw new Error("Pease enter a valid email address");
+    throw new Error("Pease enter a valid email address");
   }
- 
-  
-
-  
-
-  
 });
 
 // description logout user
@@ -102,7 +101,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-   /* res.json({
+    /* res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -110,7 +109,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       favourites: user.favourites,
       isAdmin: user.isAdmin,
     });*/
-    res.status(200).json(user)
+    res.status(200).json(user);
   } else {
     res.status(404);
     throw new Error("User not found");
@@ -233,17 +232,17 @@ const toFav = asyncHandler(async (req, res) => {
         };
 
         user.favourites.pull(dislikedDocument);
- 
-        await user.save();  
 
-       const likes= document.numLikes;
+        await user.save();
+
+        const likes = document.numLikes;
 
         res.status(200).json({ message: "Document Removed", user, likes });
       } else {
         document.numLikes = Number(document.numLikes + 1);
 
         await document.save();
- 
+
         const likedDocument = {
           name,
           image,
@@ -256,9 +255,9 @@ const toFav = asyncHandler(async (req, res) => {
         user.favourites.push(likedDocument);
         await user.save();
 
-        const likes= document.numLikes;
+        const likes = document.numLikes;
 
-        res.status(201).json({ message: "Document added", user, likes});
+        res.status(201).json({ message: "Document added", user, likes });
       }
     } else {
       res.status(404);
@@ -274,14 +273,12 @@ const getAllFavorites = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const user = await User.findById(_id);
 
-  if(user){
-  const favouritesList = user.favourites;
+  if (user) {
+    const favouritesList = user.favourites;
     res.status(200).send(favouritesList);
-
-  }else{
-    res.status(404).send({message: "User Not found"})
+  } else {
+    res.status(404).send({ message: "User Not found" });
     throw new Error(err.message);
-    
   }
 });
 
@@ -365,13 +362,13 @@ function sendEmail({ recipient_email, OTP }) {
       auth: {
         user: process.env.MY_EMAIL,
         pass: process.env.MY_PASSWORD,
-      }, 
+      },
     });
- 
+
     const mail_configs = {
       from: process.env.MY_EMAIL,
       to: recipient_email,
-      subject: "MEDIQUEST PASSWORD RECOVERY",
+      subject: "Mediquest Password Recovery",
       html: `<!DOCTYPE html>
 <html lang="en" >
 <head>
@@ -405,7 +402,6 @@ function sendEmail({ recipient_email, OTP }) {
     };
     transporter.sendMail(mail_configs, function (error, info) {
       if (error) {
-        console.log(error);
         return reject({ message: `An error has occured` });
       }
       return resolve({ message: "Email sent succesfuly" });
@@ -413,31 +409,36 @@ function sendEmail({ recipient_email, OTP }) {
   });
 }
 
-const sendOTPcode = asyncHandler( async(req, res) => {
-  const { recipient_email} = req.body;
-console.log(recipient_email)
-  const userExists = await User.findOne({ email : recipient_email });
-  console.log(userExists)
+const sendOTPcode = asyncHandler(async (req, res) => {
+  const { recipient_email } = req.body;
+  
+  const userExists = await User.findOne({ email: recipient_email });
+  
   if (!userExists) {
     res.status(404);
     throw new Error("User does not Exist!");
-  } 
+  }
   sendEmail(req.body)
-    .then((response) => res.status(200).send({ message: `Email sent succesfuly` }))
-    .catch((error) => res.status(400).send({message: `${error.message}`}));
-})
- 
+    .then((response) =>
+      res.status(200).send({ message: `Email sent succesfuly` })
+    )
+    .catch((error) => res.status(400).send({ message: `${error.message}` }));
+});
+
 // description update user profile
 //route PUT /api/users/resetpassword
 //access private
 const updatePassword = asyncHandler(async (req, res) => {
-  const {email} = req.body
-  const user = await User.findOne({email});
- 
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  const minLength = 8;
+
   if (user) {
-    
-     user.password = req.body.password;
-  
+    if (!req.body.password || req.body.password.length < minLength) {
+      res.status(400);
+      throw new Error( `Password must be at least ${minLength} characters long`);
+    }
+    user.password = req.body.password;
 
     const updatedUser = await user.save();
 
@@ -455,25 +456,80 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
+
+function sendVCode({ recipient_email, OTP }) {
+  return new Promise((resolve, reject) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MY_EMAIL,
+        pass: process.env.MY_PASSWORD,
+      },
+    });
+
+    const mail_configs = {
+      from: process.env.MY_EMAIL,
+      to: recipient_email,
+      subject: "Mediquest Verification Code",
+      html: `<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - OTP Email Template</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+  <div style="margin:50px auto;width:70%;padding:20px 0">
+    <div style="border-bottom:1px solid #eee">
+      <a href="" style="font-size:1.4em;color: #75dab4;text-decoration:none;font-weight:600">MediQuest</a>
+    </div>
+    <p style="font-size:1.1em">Hi there,</p>
+    <p>Thank you for creating an account with Mediquest. Use the following confirmation code to verify your email address:</p>
+    <h2 style="background: #75dab4;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${OTP}</h2>
+    <p style="font-size:0.9em;">Best Regards,<br />MediQuest</p>
+    <hr style="border:none;border-top:1px solid #eee" />
+    <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+      <p>MediQuest Inc</p>
+      <p>Algeria</p>
+    </div>
+  </div>
+</div>
+<!-- partial -->
+  
+</body>
+</html>`,
+    };
+    transporter.sendMail(mail_configs, function (error, info) {
+      if (error) {
+        
+        return reject({ message: `An error has occured` });
+      }
+      return resolve({ message: "Email sent succesfuly" });
+    });
+  });
+}
 //description send code to new users
 //route POST /api/users/verificationcode
 //access public
+const sendVerificationcode = asyncHandler(async (req, res) => {
+  const { recipient_email } = req.body;
+  
+  const userExists = await User.findOne({ email: recipient_email });
+  
+  if (userExists) {
+    res.status(404);
+    throw new Error("User already Exists!");
+  }
 
-const sendVerificationcode = asyncHandler( async(req, res) => {
-
-  const { recipient_email} = req.body;
-  console.log(recipient_email)
-    const userExists = await User.findOne({ email : recipient_email });
-    console.log(userExists)
-    if (userExists) {
-      res.status(404);
-      throw new Error("User already Exists!");
-    } 
-
-  sendEmail(req.body)
-    .then((response) => res.status(200).send({ message: `Code sent succesfuly` }))
-    .catch((error) => res.status(400).send({message: `${error.message}`}));
-})
+  sendVCode(req.body)
+    .then((response) =>
+      res.status(200).send({ message: `Code sent succesfuly` })
+    )
+    .catch((error) => res.status(400).send({ message: `${error.message}` }));
+});
 
 export {
   loginUser,

@@ -179,7 +179,7 @@ const DocumentScreen = () => {
   const addToNewCollectionHandler = async () => {
     try {
       const res = await createCollection({
-        collectionItems: { ...document },
+        collectionItems: { ...data },
       }).unwrap();
       navigate(`/collection/${res._id}`);
       toast.success("collection created successfully");

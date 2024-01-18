@@ -56,7 +56,8 @@ const UserEditScreen = () => {
           backgroundColor: "white",
           padding: "2rem 5rem",
           color: "black",
-          paddingTop:"7rem"
+          paddingTop:"7rem",
+          minHeight:"100vh",
         }}
       >
         <Link to="/admin/userlist" className="btn btn-light my-3">

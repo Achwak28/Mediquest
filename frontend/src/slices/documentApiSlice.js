@@ -39,6 +39,13 @@ export const documentApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    uploadDocumentFile: builder.mutation({
+      query: (data) => ({
+        url: `/api/upload/upload-pdf`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
     deleteDocument: builder.mutation({
       query: (documentId) => ({
         url: `${DOCS_URL}/${documentId}`,
@@ -89,6 +96,7 @@ export const {
   useCreateDocumentMutation,
   useUpdateDocumentMutation,
   useUploadDocumentImageMutation,
+  useUploadDocumentFileMutation,
   useDeleteDocumentMutation,
   useCreateReviewMutation,
   useDeleteCommentMutation,

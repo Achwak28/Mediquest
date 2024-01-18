@@ -10,6 +10,7 @@ import {
   useGetDocumentDetailsQuery,
   useUpdateDocumentMutation,
   useUploadDocumentImageMutation,
+  useUploadDocumentFileMutation,
 } from "../../slices/documentApiSlice";
 
 const ProductEditScreen = () => {
@@ -18,6 +19,7 @@ const ProductEditScreen = () => {
   const [name, setName] = useState("");
   const [year, setYear] = useState("");
   const [image, setImage] = useState("");
+  const [pdf, setPdf] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
 
@@ -34,6 +36,9 @@ const ProductEditScreen = () => {
   const [uploadDocumentImage, { isLoading: loadingUpload }] =
     useUploadDocumentImageMutation();
 
+  const [uploadDocumentFile, { isLoading: loadingUploadFile }] =
+    useUploadDocumentFileMutation();
+
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
@@ -44,6 +49,7 @@ const ProductEditScreen = () => {
         name,
         year,
         image,
+        file: pdf,
         category,
         description,
       }).unwrap(); // NOTE: here we need to unwrap the Promise to catch any rejection in our catch block
@@ -62,6 +68,7 @@ const ProductEditScreen = () => {
       setImage(document.image);
       setCategory(document.category);
       setDescription(document.description);
+      setPdf(document.file);
     }
   }, [document]);
 
@@ -77,6 +84,18 @@ const ProductEditScreen = () => {
     }
   };
 
+  const uploadPdfHandler = async (e) => {
+    const formData = new FormData();
+    formData.append("pdf", e.target.files[0]);
+    try {
+      const res = await uploadDocumentFile(formData).unwrap();
+      toast.success(res.message);
+      setPdf(res.file);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
   return (
     <>
       <div
@@ -84,7 +103,8 @@ const ProductEditScreen = () => {
           backgroundColor: "white",
           padding: "3rem 5rem",
           color: "black",
-          paddingTop:"6rem"
+          paddingTop: "6rem",
+          minHeight: "100vh",
         }}
       >
         <Link to="/admin/documentlist" className="btn btn-light my-3">
@@ -98,7 +118,7 @@ const ProductEditScreen = () => {
           ) : error ? (
             <Message variant="danger">{error.data.message}</Message>
           ) : (
-            <Form onSubmit={submitHandler} >
+            <Form onSubmit={submitHandler}>
               <Form.Group controlId="name">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
@@ -139,7 +159,25 @@ const ProductEditScreen = () => {
                 {loadingUpload && <Loader />}
               </Form.Group>
 
-             {/*<Form.Group controlId="category">
+              <Form.Group controlId="file">
+                <Form.Label>file</Form.Label>
+                <Form.Control
+                  style={{ color: "black" }}
+                  type="text"
+                  placeholder="Enter file url"
+                  value={pdf}
+                  onChange={(e) => setPdf(e.target.value)}
+                ></Form.Control>
+                <Form.Control
+                  label="Choose File"
+                  onChange={uploadPdfHandler}
+                  type="file"
+                ></Form.Control>
+
+                {loadingUploadFile && <Loader />}
+              </Form.Group>
+
+              {/*<Form.Group controlId="category">
                 <Form.Label>Category</Form.Label>
                 <Form.Control
                   style={{ color: "black" }}
@@ -151,14 +189,16 @@ const ProductEditScreen = () => {
               </Form.Group>*/}
 
               <Form.Group controlId="categorySelector">
-              <Form.Label>Category</Form.Label>
-              <Form.Select aria-label="Default select example" onChange={(e) => setCategory(e.target.value)}>
-                <option value="course">course</option>
-                <option value="exam">exam</option>
-                <option value="summary">summary</option>
-              </Form.Select>
+                <Form.Label>Category</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="course">course</option>
+                  <option value="exam">exam</option>
+                  <option value="summary">summary</option>
+                </Form.Select>
               </Form.Group>
-             
 
               <Form.Group controlId="description">
                 <Form.Label>Description</Form.Label>

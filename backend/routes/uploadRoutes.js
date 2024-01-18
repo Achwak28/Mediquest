@@ -6,7 +6,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "uploads/images/");
   },
 
   filename(req, file, cb) {
@@ -14,6 +14,16 @@ const storage = multer.diskStorage({
       null,
       `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
     );
+  },
+});
+
+// Storage configuration for PDFs
+const pdfStorage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, "uploads/pdf/");
+  },
+  filename(req, file, cb) {
+    cb(null, `${file.originalname}`);
   },
 });
 
@@ -31,38 +41,40 @@ function fileFilter(req, file, cb) {
   }
 }
 
-const upload = multer({ storage, fileFilter });
-const uploadSingleImage = upload.single("image");
+// File filter for PDFs
+function pdfFileFilter(req, file, cb) {
+  const filetypes = /pdf/;
+  const mimetype = /application\/pdf/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const isPDF = mimetype.test(file.mimetype);
 
-const storagePDF = multer.diskStorage({
-  destination: function (req, file, cb) {
-    //where to store the file
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  },
-});
-
-const fileFilterPDF = (req, file, cb) => {
-  //reject a file if it's not a pdf
-  if (file.mimetype === "file/pdf") {
+  if (extname && isPDF) {
     cb(null, true);
   } else {
-    cb(new Error("pdf files only!"), false);
+    cb(new Error("PDF files only!"), false);
   }
-};
+}
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 2 * 1024 * 1024 },
+});
+const uploadSingleImage = upload.single("image");
 
 const uploadPDF = multer({
-  storagePDF,
-  fileFilterPDF,
-});
-
-const uploadSingleFile = uploadPDF.single("file");
+  storage: pdfStorage,
+  fileFilter: pdfFileFilter,
+}).single("pdf");
 
 router.post("/", (req, res) => {
   uploadSingleImage(req, res, function (err) {
     if (err) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res
+          .status(400)
+          .json({ error: "Image size exceeds the limit (2MB)" });
+      }
       return res.status(400).send({ message: err.message });
     }
 
@@ -73,19 +85,23 @@ router.post("/", (req, res) => {
   });
 });
 
-router.post("/uploadpdf", (req, res) => {
-  console.log("is uploading");
-  console.log(req.file);
-  uploadSingleFile(req, res, function (err) {
+// Example route for handling PDF file upload
+router.post("/upload-pdf", (req, res) => {
+  uploadPDF(req, res, (err) => {
     if (err) {
-      return res.status(400).send({ message: err.message });
+      // Handle the upload error
+      return res.status(400).json({ error: err.message });
     }
 
-    res.status(200).send({
-      message: "File uploaded successfully",
-      file: `/${req.file.path}`,
-    });
+    // PDF file uploaded successfully
+    res
+      .status(200)
+      .json({
+        message: "file uploaded successfully",
+        file: `/${req.file.path}`,
+      });
   });
 });
 
 export default router;
+

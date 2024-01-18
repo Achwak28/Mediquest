@@ -4,8 +4,8 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import path from "path";
 
 const __dirname = path.resolve();
-// description get all products
-//route GET /api/products
+// description get all documents
+//route GET /api/documents
 //access PUBLIC
 const getDocSimple = asyncHandler(async (req, res) => {
   const documents = await Document.find({});
@@ -67,8 +67,8 @@ const getDocs = asyncHandler(async (req, res) => {
 
  
 });
-// description get SINGLE PRODUCT BY id
-//route GET /api/products/:id
+// description get SINGLE document BY id
+//route GET /api/documents/:id
 //access PUBLIC
 const getDocumentById = asyncHandler(async (req, res) => {
   const document = await Document.findById(req.params.id);
@@ -82,35 +82,39 @@ const getDocumentById = asyncHandler(async (req, res) => {
   //res.status(404).json({message :"Document is not found !"})
 });
 
-// @desc upload pdf file
-// @route GET /api/documents/:id/upload
-// @access Private/Admin
-const uploadFile = asyncHandler(async (req, res) => {
-  const { name } = req.body;
-  const file = req.file.path;
-  const item = await Item.create({ name, file });
-  res.status(201).json({ item });
-});
+
 
 // @desc download pdf file
 // @route GET /api/documents/:id/download
 // @access Private/Admin
 const downloadFile = asyncHandler(async (req, res) => {
-  console.log("enter")
+
   const document = await Document.findById(req.params.id);
   if (!document) {
     res.status(404);
     throw new Error("Document not Found !");
   } 
   const file = document.file;
-  const filePath = path.join(__dirname, `frontend/public/${file}`);
-  console.log(__dirname)
-  console.log(filePath)
-  res.download(filePath, file);
+ 
+  if(file === "/sample.pdf"){
+    
+    res.status(404);
+    throw new Error("Sorry, no pdf file available now!");
+    /*const filePath = path.join(__dirname, `frontend/public/${file}`);
+    console.log(__dirname)
+    console.log(filePath)
+    res.download(filePath, file);*/
+
+  }else{
+    const file = document.file;
+    const filePath = path.join(__dirname, `${file}`);
+    res.download(filePath, file);
+  }
+  
 });
 
-// @desc    Create a product
-// @route   POST /api/products
+// @desc    Create a document
+// @route   POST /api/documents
 // @access  Private/Admin
 const createDocument = asyncHandler(async (req, res) => {
   const document = new Document({
@@ -129,11 +133,11 @@ const createDocument = asyncHandler(async (req, res) => {
   res.status(201).json(createdDocument);
 });
 
-// @desc    Update a product
-// @route   PUT /api/products/:id
+// @desc    Update a document
+// @route   PUT /api/documents/:id
 // @access  Private/Admin
 const updateDocument = asyncHandler(async (req, res) => {
-  const { name, year, description, image, category } = req.body;
+  const { name, year, description, image, category, file } = req.body;
 
   const document = await Document.findById(req.params.id);
 
@@ -143,6 +147,7 @@ const updateDocument = asyncHandler(async (req, res) => {
     document.description = description;
     document.image = image;
     document.category = category;
+    document.file = file;
 
     const updatedDocument = await document.save();
     res.json(updatedDocument);
@@ -152,8 +157,8 @@ const updateDocument = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Delete a product
-// @route   DELETE /api/products/:id
+// @desc    Delete a document
+// @route   DELETE /api/documents/:id
 // @access  Private/Admin
 const deleteDocument = asyncHandler(async (req, res) => {
   const document = await Document.findById(req.params.id);
