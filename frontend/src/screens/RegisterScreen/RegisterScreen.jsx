@@ -111,7 +111,8 @@ const RegisterScreen = () => {
       }
     }
   };
-  const verfiyCode = async () => {
+  const verfiyCode = async (e) => {
+    e.preventDefault()
     
     if (parseInt(OTPinput) === otpCode) {
 
@@ -249,7 +250,7 @@ const RegisterScreen = () => {
                       }}
                     ></Spinner>
                   )}
-                  <Form>
+                  <Form onSubmit={verfiyCode}>
                     <Form.Group
                       className="my-2 white mt-3 mb-2"
                       controlId="otp-input"
@@ -265,8 +266,8 @@ const RegisterScreen = () => {
                     <Button
                       style={{ width: "100%", fontWeight: "700" }}
                       className="verify-btn btn-block shadow-none mt-2 mb-3"
-                      type="button"
-                      onClick={() => verfiyCode()}
+                      type="submit"
+                    
                     >
                       {isLoading ? (
                         <Spinner

@@ -50,10 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error( `Password must be at least ${minLength} characters long`);
   }
-  const { wellFormed, validDomain, validMailbox } = await emailValidator.verify(
-    email
-  );
-
+ 
  
     const user = await User.create({
       name,
