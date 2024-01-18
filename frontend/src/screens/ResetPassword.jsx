@@ -44,22 +44,20 @@ const ResetPassword = () => {
     <>
       <div
         className="container-forgot container-reset"
-        style={{
-          backgoundColor: "#f1f2f5",
-        }}
+        
       >
         <Row
           className="justify-content-center"
           style={{
             paddingTop: "8.5rem",
             paddingBottom: "7rem",
-            backgoundColor: "#f1f2f5",
+           
             height: "100vh",
             color: "black",
           }}
         >
           <Col md={6}>
-            <Card className="p-3 rounded shadow-lg">
+            <Card className="p-3 rounded shadow-lg reset-card mx-3">
               <ListGroup variant="flush">
                 {isLoading && <Loader />}
                 {showMessage && (

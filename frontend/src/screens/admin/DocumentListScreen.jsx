@@ -56,6 +56,8 @@ const DocumentListScreen = () => {
           padding: "2rem 5rem",
           color:"black",
           paddingTop:"8rem",
+          overflow: "scroll",
+          overflowX: "hidden",
         }}
       >
         <Row

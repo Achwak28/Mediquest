@@ -54,7 +54,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email
   );
 
-  if (validDomain & wellFormed & (validMailbox !== null)) {
+ 
     const user = await User.create({
       name,
       email,
@@ -77,10 +77,7 @@ const registerUser = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("Invalid user data");
     }
-  } else {
-    res.status(400);
-    throw new Error("Pease enter a valid email address");
-  }
+  
 });
 
 // description logout user

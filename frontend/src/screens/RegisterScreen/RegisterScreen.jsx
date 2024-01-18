@@ -37,7 +37,7 @@ const RegisterScreen = () => {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const redirect = sp.get("redirect") || "/";
+  const redirect = sp.get('redirect') || '/';
 
   useEffect(() => {
     if (userInfoMediquest) {
@@ -112,6 +112,7 @@ const RegisterScreen = () => {
     }
   };
   const verfiyCode = async () => {
+    
     if (parseInt(OTPinput) === otpCode) {
 
       
@@ -201,7 +202,7 @@ const RegisterScreen = () => {
                 <Col className="white">
                   Already have an account?{" "}
                   <Link
-                    to={redirect ? `/login?redirect=${redirect}` : "/login"}
+                    style={{color:"#00537A"}} to={redirect ? `/login?redirect=${redirect}` : '/login'}
                     style={{ color: "#75dab4" }}
                   >
                     {" "}

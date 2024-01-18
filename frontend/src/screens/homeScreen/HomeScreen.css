@@ -13,13 +13,29 @@
 .home-container .home-content{
     display: flex;
     justify-content: start;
-    align-items: center;
+    margin-left: 15rem;
+    align-items: flex-start; 
     flex-direction: column;
    text-align: start;
    
 }
+.home-container .home-content h1, 
+.home-container .home-content .h1,
+.home-container .home-content h1 span, 
+.home-container .home-content .h1 span {
+  font-size: calc(2.375rem + 1.5vw);
+  margin: 0; 
+  font-weight: 600;
+}
+
+.home-container .home-content span {
+  color: #ebf4f5;
+  margin: 0; /* Added to remove default margin */
+  font-size: 1.1rem;
+}
 
 .home-container .start-btn{
+  margin-top: 1rem;
     padding: 1rem 3rem;
     color: black;
     background-color: #75dab4;
@@ -28,3 +44,19 @@
     font-size: 1rem;
     border: transparent;
 }
+
+@media (max-width: 767px) {
+  .home-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .home-container .home-content{
+    display: flex;
+    justify-content: center;
+    text-align: start;
+    margin-left: 0;
+  
+   
+}
+} 

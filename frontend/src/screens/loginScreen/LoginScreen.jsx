@@ -27,7 +27,7 @@ const LoginScreen = () => {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const redirect = sp.get("redirect") || "/";
+  const redirect = sp.get('redirect') || '/';
 
   useEffect(() => {
     if (userInfoMediquest) {
@@ -127,7 +127,7 @@ const LoginScreen = () => {
             <Col className="white">
               Don't have an account?{" "}
               <Link
-                to={redirect ? `/register?redirect=${redirect}` : "/register"}
+               to={redirect ? `/register?redirect=${redirect}` : '/register'}
                 style={{ color: "#75dab4" }}
               >
                 {" "}

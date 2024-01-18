@@ -17,10 +17,10 @@ const HomeScreen = () => {
             Empower Your<br></br> Mind through<br></br> Medi
             <span style={{ color: "#75dab4" }}>Q</span>uest
           </h1>
-          <p style={{color:'#ebf4f5'}}>
+          <span style={{color:'#ebf4f5'}}>
             With our user-friendly interface and <br /> comprehensive {" "}
             curriculum, you'll<br /> embark  on a transformative journey
-          </p>
+          </span>
           <Link to="/exams" className="mt-2">
             <button type="button" className="start-btn">
               START LEARNING {' '} <FaArrowRightLong color="black" />

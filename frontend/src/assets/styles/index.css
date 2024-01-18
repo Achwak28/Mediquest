@@ -115,7 +115,7 @@ button.btn-block.btn.btn-primary {
   height:100vh;
 }
 .container-forgot {
-  background-color: #f1f2f5 !important;
+  background-color: #f1f2f5;
   height: fit-content;
   overflow: scroll;
   overflow-x: hidden;
@@ -146,9 +146,11 @@ button.btn-block.btn.btn-primary {
 }
 
 .container-forgot .list-group-item {
-  border: none;
+  border: none; 
 }
-
+.container-forgot .container-reset{
+  backgound-color: "#f1f2f5",
+}
 .container-forgot .verify-btn {
   width: 100%;
   font-size: medium;
@@ -157,4 +159,5 @@ button.btn-block.btn.btn-primary {
   border-color: #38b58b;
   padding: 0.8rem 0.2rem;
 }
+
 
