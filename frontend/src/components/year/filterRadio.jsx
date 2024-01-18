@@ -3,10 +3,10 @@ import Input from "../../components/Input";
 
 function Year({ handleChange }) {
   return (
-    <div className="ml-3" style={{margin: "auto"}}>
+    <div className="ml-3 " style={{margin: "auto"}}>
       <h2 className="sidebar-title">Year</h2>
-
-      <div className="ml-3" style={{margin: "auto"}}>
+ 
+      <div className=" filter-container" style={{margin: "auto"}}>
         <label className="sidebar-label-container">
           <input onChange={handleChange} type="radio" value="" name="test" />
           <span className="checkmark"></span>All
@@ -46,6 +46,12 @@ function Year({ handleChange }) {
           handleChange={handleChange}
           value="6"
           title="6"
+          name="test"
+        />
+         <Input
+          handleChange={handleChange}
+          value="7"
+          title="7"
           name="test"
         />
       </div>

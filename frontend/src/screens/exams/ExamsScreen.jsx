@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { Pagination } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import Form from "react-bootstrap/Form";
-import { useGetDocumentsQuery } from "../../slices/documentApiSlice";
+import { toast } from "react-toastify";
+import {
+  useGetDocumentsQuery,
+  useFilterDocumentsMutation,
+} from "../../slices/documentApiSlice";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import "./ExamsSCreen.css";
@@ -12,63 +15,62 @@ import ExamCard from "../../components/ExamCard";
 import Year from "../../components/year/filterRadio";
 
 const ExamsScreen = () => {
+  const [exams, setExams] = useState();
   const { pageNumber, keyword } = useParams();
   const { data, isLoading, isError } = useGetDocumentsQuery({
     keyword,
     pageNumber,
-   category:"exam",
+    category: "exam",
   });
-  //const {documents} = data;
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [filterDocuments, { isLoading: loadingFiltered }, error] =
+    useFilterDocumentsMutation();
 
-  console.log(data);
-  
-
-  // ----------- Radio Filtering -----------
-  const handleChange = (event) => {
-    setSelectedCategory(event.target.value);
-    const newDocuments = data?.documents.filter(
-      (document) => document.year === selectedCategory
-    );
-    console.log(newDocuments);
-    //setExams(newDocuments);
+  const handleChange = async (event) => {
+    event.preventDefault();
+    if (!event.target.value) {
+      setExams(data);
+    } else {
+      try {
+        const newDocuments = await filterDocuments({
+          keyword,
+          pageNumber,
+          category: "exam",
+          year: event.target.value,
+        }).unwrap();
+        setExams(newDocuments);
+      } catch (error) {
+        toast.error(error?.data?.message || error.error);
+      }
+    }
   };
 
-  const filterDocuments = (year) => {
-    const newDocuments = data.documents.filter(
-      (document) => document.year === "1"
-    );
-    console.log(newDocuments);
-    //setExams(newDocuments);
-  };
-
+ 
+  useEffect(() => {
+    
+    if (data) {
+      setExams(data);
+    }
+  }, [data]);
   return (
     <>
       <Row className="exams-row">
-        <Col
-          className="filter-side"
-          md={2}
-          style={{ height: "100vh", paddingLetf: "2rem" }}
-        >
+        <Col className="filter-side" md={2}>
           <Year handleChange={handleChange} />
-
-          <Form.Check label="1" name="group1" type="radio" />
         </Col>
 
         <Col
           className="content-side"
-          style={{ backgroundColor: "#161616" }}
+          style={{ backgroundColor: "#161616", minHeight:"100vh" }}
           md={10}
         >
           <Row className="p-3 mt-3">
             <Col>
               <strong>Exams</strong>
             </Col>
-            <Col md={2}>
-              
-            </Col>
+            <Col md={2}></Col>
           </Row>{" "}
+          {loadingFiltered && <Loader />}
           {/* .filter((item) => item.category === "exams") */}
           {isLoading ? (
             <Loader />
@@ -78,27 +80,33 @@ const ExamsScreen = () => {
             </Message>
           ) : (
             <Row className="m-2">
-              {data.categorizedDocs.map((document) => (
+              {exams?.categorizedDocs.map((document) => (
                 <Col key={document._id} sm={12} md={5} lg={4} xl={3}>
+                  <div className="card-container">
                   <ExamCard document={document} className="m-3" />
+                  </div>
                 </Col>
               ))}
+              {exams?.categorizedDocs.length === 0 && (
+                <Row className="justify-content-center">
+                  <Col md={10}>
+                    <Message>no matches were found!</Message>
+                  </Col>
+                </Row>
+              )}
             </Row>
           )}
-         
-          {data?.pages > 1 && (
-                <Pagination className="mx-auto my-2">
-                  {[...Array(data?.pages).keys()].map((x) => (
-                    <LinkContainer key={x + 1} to={`/exams/page/${x + 1}`}>
-                      <Pagination.Item active={x + 1 === data?.page}>
-                        {x + 1}
-                      </Pagination.Item>
-                    </LinkContainer>
-                  ))}
-                </Pagination>
-              )}
-     
-          
+          {exams?.pages > 1 && (
+            <Pagination className="mx-auto my-2">
+              {[...Array(exams?.pages).keys()].map((x) => (
+                <LinkContainer key={x + 1} to={`/exams/page/${x + 1}`}>
+                  <Pagination.Item active={x + 1 === exams?.page}>
+                    {x + 1}
+                  </Pagination.Item>
+                </LinkContainer>
+              ))}
+            </Pagination>
+          )}
         </Col>
       </Row>
     </>

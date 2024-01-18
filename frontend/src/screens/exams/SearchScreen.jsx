@@ -18,14 +18,13 @@ const ExamsScreen = () => {
   return (
     <>
       <Row className="exams-row">
-        <Col className="filter-side" md={2} style={{ height: "100vh" }}>
+        {/* <Col className="filter-side" md={2} style={{ height: "100vh" }}>
           first
-        </Col>
+        </Col> */}
 
         <Col
-          className="content-side"
-          style={{ backgroundColor: "#161616" }}
-          md={10}
+          className="content-side mx-3"
+          style={{ backgroundColor: "#161616", minHeight: "100vh" }}
         >
           <Row className="p-3 mt-3">
             <Col>
@@ -37,15 +36,18 @@ const ExamsScreen = () => {
           </Row>
           {isLoading ? (
             <Loader />
-          ) : isError ? (
+            
+          ) : isError ? ( 
             <Message variant="danger">
               {isError?.data?.message || isError?.error}
             </Message>
           ) : (
             <Row className="m-1">
               {data?.documents.map((document) => (
-                <Col key={document._id} sm={12}  md={5} lg={4} xl={3}>
-                  <ExamCard document={document} className="m-2" />
+                <Col key={document._id} sm={12} md={5} lg={4} xl={3}>
+                  <div className="card-container" style={{display: "flex", justifyContent:"center"}}>
+                    <ExamCard document={document} className="m-2" />
+                  </div>
                 </Col>
               ))}
             </Row>

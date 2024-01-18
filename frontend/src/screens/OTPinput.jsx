@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, Navigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import Spinner from "react-bootstrap/Spinner";
 import { Row, Col, ListGroup, Card, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useSendOTPMutation } from "../slices/usersApiSlice";
@@ -16,8 +17,9 @@ export default function () {
   const [timerCount, setTimer] = useState(60);
   const [OTPinput, setOTPinput] = useState([0, 0, 0, 0]);
   const [disable, setDisable] = useState(true);
+  const [loadingCheck, setLoadingCheck] = useState(false);
 
-  const email = data.email.email; 
+  const email = data.email.email;
 
   const [sendOTP, { isLoading }] = useSendOTPMutation();
 
@@ -29,7 +31,7 @@ export default function () {
     } else {
       try {
         await sendOTP({ recipient_email: email, OTP: OTP }).unwrap();
-        setTimeout(() => setOTPCode(null), 300000)
+        setTimeout(() => setOTPCode(null), 300000);
         setDisable(true);
         setTimer(60);
         toast.success("A new OTP has succesfully been sent to your email.");
@@ -42,10 +44,13 @@ export default function () {
   const verfiyOTP = () => {
     if (parseInt(OTPinput.join("")) === otpCode) {
       const data = { email: { email } };
-      localStorage.removeItem('otpCode')
-      localStorage.setItem('resetPassword', JSON.stringify(true))
-      setTimeout(() => localStorage.removeItem('resetPassword'), 600000)
-      navigate("/resetpassword", { state: data });
+      setLoadingCheck(true);
+      setTimeout(() => {
+        localStorage.removeItem("otpCode");
+        localStorage.setItem("resetPassword", JSON.stringify(true));
+        setTimeout(() => localStorage.removeItem("resetPassword"), 600000);
+        navigate("/resetpassword", { state: data });
+      }, 4000);
     } else {
       toast.error(
         "The code you have entered is not correct, try again or re-send the code"
@@ -66,7 +71,7 @@ export default function () {
     return () => clearInterval(interval);
   }, [disable]);
 
-  return  (
+  return (
     <>
       <div
         className="container-forgot"
@@ -167,7 +172,17 @@ export default function () {
                     type="button"
                     onClick={() => verfiyOTP()}
                   >
-                    Verify Account
+                    {loadingCheck ? (
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      "Verify Account"
+                    )}
                   </Button>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -190,5 +205,5 @@ export default function () {
         </Row>
       </div>
     </>
-  ) ; 
+  );
 }

@@ -11,9 +11,20 @@ export const documentApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
       providesTags: ['Documents'],
     }), 
+   
+    filterDocuments: builder.mutation({
+      query: (data) => ({
+        url: `${DOCS_URL}/filter`,
+        method: "POST",  
+        body: data,
+      }),
+      keepUnusedDataFor: 5,
+      providesTags: ['Documents'],
+    }),
     getDocumentDetails: builder.query({
       query: (id) => ({
         url: `${DOCS_URL}/${id}`,
+
       }),
       keepUnusedDataFor: 5,
     }),
@@ -93,6 +104,7 @@ export const documentApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetDocumentsQuery,
   useGetDocumentDetailsQuery,
+  useFilterDocumentsMutation,
   useCreateDocumentMutation,
   useUpdateDocumentMutation,
   useUploadDocumentImageMutation,

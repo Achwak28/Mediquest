@@ -33,39 +33,94 @@ const getDocs1 = asyncHandler(async (req, res) => {
   res.json({ documents, page, pages: Math.ceil(count / pageSize) });
 });
 
+// description get all documents with pagination
+//route GET /api/documents
+//access PUBLIC
 const getDocs = asyncHandler(async (req, res) => {
- const {category} = req.query
- const pageSize = 8; //process.env.PAGINATION_LIMIT
- const page = Number(req.query.pageNumber) || 1;
+  const { category } = req.query;
+  const pageSize = 8; //process.env.PAGINATION_LIMIT
+  const page = Number(req.query.pageNumber) || 1;
 
- const keyword = req.query.keyword
-   ? {
-       name: {
-         $regex: req.query.keyword,
-         $options: "i",
-       },
-     }
-   : {};
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
 
- if(category){
+  if (category) {
+    const countCategory = await Document.countDocuments({
+      ...keyword,
+      category: `${category}`,
+    });
+    const categorizedDocs = await Document.find({
+      ...keyword,
+      category: `${category}`,
+    })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+    res.json({
+      categorizedDocs,
+      page,
+      pages: Math.ceil(countCategory / pageSize),
+    });
+  } else {
+    const count = await Document.countDocuments({ ...keyword });
+    const documents = await Document.find({ ...keyword })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
 
-  const countCategory = await Document.countDocuments({ ...keyword, category:`${category}`});
-  const categorizedDocs = await Document.find({ ...keyword, category:`${category}`})
-  .limit(pageSize)
-  .skip(pageSize * (page - 1));
-  res.json({ categorizedDocs, page, pages: Math.ceil(countCategory / pageSize) });
- }else {
-  const count = await Document.countDocuments({ ...keyword });
-  const documents = await Document.find({ ...keyword })
-    .limit(pageSize)
-    .skip(pageSize * (page - 1));
+    res.json({ documents, page, pages: Math.ceil(count / pageSize) });
+  }
+});
 
-  res.json({ documents, page, pages: Math.ceil(count / pageSize) });
- }
- 
+// description get all documents coresponding the filter condition
+//route GET /api/documents/filter
+//access PUBLIC
+const filterDocuments = asyncHandler(async (req, res) => {
+  
+  const {year, category} = req.body
+  const pageSize = 8; //process.env.PAGINATION_LIMIT
+  const page = Number(req.body.pageNumber) || 1;
+
+  const keyword = req.body.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+
+  if (category) {
    
+    const countCategory = await Document.countDocuments({
+      ...keyword,
+      category: `${category}`,
+      year: `${year}`,
+    });
+    const categorizedDocs = await Document.find({
+      ...keyword,
+      category: `${category}`,
+      year: `${year}`,
+    })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+    res.json({
+      categorizedDocs,
+      page,
+      pages: Math.ceil(countCategory / pageSize),
+    });
+  } else {
+    const count = await Document.countDocuments({ ...keyword });
+    const documents = await Document.find({ ...keyword })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
 
- 
+    res.json({ documents, page, pages: Math.ceil(count / pageSize) });
+  }
 });
 // description get SINGLE document BY id
 //route GET /api/documents/:id
@@ -82,35 +137,29 @@ const getDocumentById = asyncHandler(async (req, res) => {
   //res.status(404).json({message :"Document is not found !"})
 });
 
-
-
 // @desc download pdf file
 // @route GET /api/documents/:id/download
 // @access Private/Admin
 const downloadFile = asyncHandler(async (req, res) => {
-
   const document = await Document.findById(req.params.id);
   if (!document) {
     res.status(404);
     throw new Error("Document not Found !");
-  } 
+  }
   const file = document.file;
- 
-  if(file === "/sample.pdf"){
-    
+
+  if (file === "/sample.pdf") {
     res.status(404);
     throw new Error("Sorry, no pdf file available now!");
     /*const filePath = path.join(__dirname, `frontend/public/${file}`);
     console.log(__dirname)
     console.log(filePath)
     res.download(filePath, file);*/
-
-  }else{
+  } else {
     const file = document.file;
     const filePath = path.join(__dirname, `${file}`);
     res.download(filePath, file);
   }
-  
 });
 
 // @desc    Create a document
@@ -225,7 +274,6 @@ const deleteComment = asyncHandler(async (req, res) => {
     );
 
     if (alreadyReviewed) {
-     
       const review = {
         name: req.user.name,
         rating: alreadyReviewed.rating,
@@ -235,7 +283,7 @@ const deleteComment = asyncHandler(async (req, res) => {
       document.reviews.pull(alreadyReviewed);
       await document.save();
       res.status(201).json({ message: "Comment deleted", document });
-    }else {
+    } else {
       res.status(404);
       throw new Error("Review not found");
     }
@@ -243,7 +291,6 @@ const deleteComment = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Document not found");
   }
- 
 });
 
 const getAllFavorites = asyncHandler(async (req, res) => {
@@ -266,6 +313,7 @@ const getTopDocuments = asyncHandler(async (req, res) => {
 });
 export {
   getDocs,
+  filterDocuments,
   getDocumentById,
   downloadFile,
   createDocument,

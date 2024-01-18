@@ -41,7 +41,7 @@
   .profile-row .profile-sidebar:first-child {
     margin-top: 0;
   }
-}
+} 
 @media (min-width: 768px) and (max-width: 1000px) {
   .profile-row .profile-sidebar {
     display: flex;

@@ -45,7 +45,7 @@ const ProfileScreen = () => {
     if (width < 768){
       setHeight("20vh")
     } else{
-      setHeight("100vh")
+      setHeight("100vh") 
     };
     setName(userInfoMediquest.name);
     setEmail(userInfoMediquest.email);

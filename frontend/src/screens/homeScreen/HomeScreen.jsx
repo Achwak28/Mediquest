@@ -1,19 +1,12 @@
 import React from "react";
-import { Col, Row } from "react-bootstrap";
-import { useParams, Link } from "react-router-dom";
-import Message from "../../components/Message";
-import Loader from "../../components/Loader";
-import Paginate from "../../components/Paginate";
+import { Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { FaArrowRightLong } from "react-icons/fa6";
 import "./HomeScreen.css";
-import bg from "../../assets/homepage_bg.png";
 
-var sectionStyle = {
-  backgroundImage: `url(${bg})`,
-};
 
 const HomeScreen = () => {
-  const { pageNumber, keyword } = useParams();
+  
  
 
   return (

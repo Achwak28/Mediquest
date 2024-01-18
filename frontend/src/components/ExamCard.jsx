@@ -31,7 +31,7 @@ const [likes, setLikes] = useState(document.numLikes)
 
 
   const { data: userProfile, refetch, isLoadingUserProfile } = useGetUserProfileQuery();
-
+ 
   
   const [color, setColor]= useState()
 
@@ -41,7 +41,7 @@ const [likes, setLikes] = useState(document.numLikes)
       return obj._id === document._id;
     }) 
     setColor(found ? "#fa3e5f": "#75dab4")
-  }, [])
+  }, [userProfile?.favourites])
 
 
 

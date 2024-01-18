@@ -75,7 +75,7 @@ const Header = () => {
                 to="/summaries"
                 style={{ cursor: "pointer" }}
               >
-                <NavItem eventKey={3}>Summary</NavItem>
+                <NavItem eventKey={3}>Summaries</NavItem>
               </LinkContainer>
             </Nav>
             <SearchBox />

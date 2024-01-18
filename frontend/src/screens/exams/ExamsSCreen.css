@@ -37,3 +37,19 @@
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
 }
+
+.filter-side{ 
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+}
+
+@media (max-width: 767px) {
+    .filter-side{
+        height:20vh;
+    }
+    .card-container{
+        display: flex;
+        justify-content: center;
+    }
+  } 
