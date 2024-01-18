@@ -21,9 +21,10 @@ const storage = multer.diskStorage({
 const pdfStorage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, "uploads/pdf/");
-  },
+  }, 
   filename(req, file, cb) {
-    cb(null, `${file.originalname}`);
+    const currentDate = new Date().toISOString().replace(/:/g, '-')
+    cb(null, `${path.parse(file.originalname).name}_${currentDate}${path.extname(file.originalname)}`);
   },
 });
 

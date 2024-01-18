@@ -131,7 +131,7 @@ const ProfileScreen = () => {
                     style={{
                       width: "150px",
                       height: "150px",
-                      borderRadius: "50%",
+                      borderRadius: userInfoMediquest.image === '/images/user_image.png' ? '0' : '50%',
                       marginBottom: "2rem",
                     }}
                   />

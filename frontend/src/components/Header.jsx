@@ -130,7 +130,7 @@ const Header = () => {
                       style={{
                         width: "30px",
                         height: "30px",
-                        borderRadius: "50%",
+                        borderRadius: userInfoMediquest.image === '/images/user_image.png' ? '0' : '50%',
                       }}
                     />
                   </Nav.Link>

@@ -100,8 +100,12 @@ const DocumentScreen = () => {
           method: "GET",
           responseType: "blob",
         }).then((response) => {
-         
+         console.log(response)
           setLoading(false)
+          // Extract filename from Content-Disposition header
+         const contentDisposition = response.headers['content-disposition'];
+         const filenameMatch = contentDisposition && contentDisposition.match(/filename="(.+?)"/);
+         const filename = filenameMatch ? filenameMatch[1] : 'downloadedFile';
           // Access the response data directly
           const blob = response.data;
           // Create blob link to download
@@ -112,7 +116,7 @@ const DocumentScreen = () => {
           link.href = url;
           link.setAttribute(
             'download',
-            `FileName.pdf`,
+            filename,
           );
       
           // Append to html link element page
