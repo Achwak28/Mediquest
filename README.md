@@ -20,7 +20,7 @@ Explore our website: [MediQuest](https://mediquest.onrender.com/)
 Include screenshots here to showcase the user interface and features of MediQuest.
 
 ### Home Page
-![Home Page](screenshots/home_page.png)
+![Home Page](/screenshots/home_page.png)
 
 ### Login
 ![Login](screenshots/login.png)
