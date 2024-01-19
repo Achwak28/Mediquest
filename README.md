@@ -23,26 +23,26 @@ Include screenshots here to showcase the user interface and features of MediQues
 ![Home Page](screenshots/home_page.PNG)
 
 ### Login
-![Login](screenshots/login.png)
+![Login](screenshots/login.PNG)
 
 ### Register
-![Register](screenshots/register.png)
+![Register](screenshots/register.PNG)
 
 ### Search
-![Search](screenshots/search_page.png)
+![Search](screenshots/search_page.PNG)
 
 ### Favorites
-![Favorites](screenshots/profile_favourites.png)
+![Favorites](screenshots/profile_favourites.PNG)
 
 ### Collections
-![Collections](screenshots/profile_collections.png)
+![Collections](screenshots/profile_collections.PNG)
 
 ### Collection Page
-![Collection Page](screenshots/collection_page.png)
+![Collection Page](screenshots/collection_page.PNG)
 
 ### Document Page
-![Document Page](screenshots/document_page.png)
-![Document Page](screenshots/document_comments.png)
+![Document Page](screenshots/document_page.PNG)
+![Document Page](screenshots/document_comments.PNG)
 
 
 
