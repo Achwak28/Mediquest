@@ -150,7 +150,8 @@ button.btn-block.btn.btn-primary {
   border: none; 
 }
 .container-forgot .container-reset{
-  backgound-color: "#f1f2f5",
+  background-color: #f1f2f5 ;
+  
 }
 .container-forgot .verify-btn {
   width: 100%;
@@ -176,5 +177,11 @@ button.btn-block.btn.btn-primary {
   }
   .review {
     padding: 0.2rem,
+  }
+  .container-forgot .otp-input {
+    width: 45px;
+    height: 45px;
+    margin: 0.5rem 0.5rem;
+    
   }
 } 

@@ -430,7 +430,7 @@ const DocumentScreen = () => {
                   {data.reviews.map((review) => (
                     <ListGroup.Item key={review._id}>
                       <Row>
-                        <Col md={10}>
+                        <Col  md={10}>
                           <strong>{review.name}</strong>
                           <Rating value={review.rating} />
                           <p>{review.createdAt.substring(0, 10)}</p>
