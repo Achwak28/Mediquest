@@ -38,7 +38,9 @@ const ProfileScreen = () => {
             <Row className="  justify-content-center">
               {userProfile?.favourites.map((document) => (
                 <Col key={document._id} sm={6} md={5} lg={4} xl={3}>
+                  <div className="card-container">
                   <ExamCard document={document} />
+                  </div>
                 </Col>
               ))}
             </Row>

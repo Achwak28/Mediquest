@@ -34,7 +34,7 @@ const ProfileScreen = () => {
             <Message variant="danger">{error.data.message}</Message>
           ) : data.length === 0 ? (
             <Row className="justify-content-center">
-              <Col md={10}><Message>you have no collections, create one now!</Message></Col>
+              <Col md={6}><Message>you have no collections, create new one now!</Message></Col>
               
             </Row>
           ) : (

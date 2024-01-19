@@ -92,7 +92,7 @@ export default function () {
           <Col md={6}>
             <Card
               className="p-3 d-flex align-items-center  
-                        justify-content-center rounded shadow-lg"
+                        justify-content-center rounded shadow-lg mx-3"
             >
               <ListGroup variant="flush">
                 {isLoading && <Loader />}

@@ -43,6 +43,7 @@ table th {
 
 .review {
   margin-top: 30px;
+  padding: "2rem",
 }
 
 .review h2 {
@@ -160,4 +161,20 @@ button.btn-block.btn.btn-primary {
   padding: 0.8rem 0.2rem;
 }
 
+.document-container{
+  background-color: white;
+  padding: 2rem 5rem;
+  padding-top: 85px;
+  min-height:100vh;
+}
+@media (max-width: 767px) {
+  .document-container{
+    padding-left: 0.2rem !important;
+    padding-right: 0.2rem !important;
+  
 
+  }
+  .review {
+    padding: 0.2rem,
+  }
+} 

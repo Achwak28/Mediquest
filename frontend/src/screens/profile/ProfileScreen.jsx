@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaUser, FaHeart } from "react-icons/fa";
 import { IoIosFolderOpen } from "react-icons/io";
 import { toast } from "react-toastify";
-import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import {
   useProfileMutation,
@@ -64,8 +63,8 @@ const ProfileScreen = () => {
       const res = await uploadUserImage(formData).unwrap();
       toast.success(res.message);
       setImage(res.image);
-    } catch (err) {
-      toast.error(err?.data?.message || err.error);
+    } catch (err) { 
+      toast.error(err?.data?.message || err?.data?.error);
     }
   };
   const dispatch = useDispatch();

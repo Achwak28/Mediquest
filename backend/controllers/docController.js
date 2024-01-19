@@ -148,18 +148,33 @@ const downloadFile = asyncHandler(async (req, res) => {
   }
   const file = document.file;
 
-  if (file === "/sample.pdf") {
-    res.status(404);
+try {
+
+  /*if (file === "/sample.pdf") {
+    res.status(400);
     throw new Error("Sorry, no pdf file available now!");
-    /*const filePath = path.join(__dirname, `frontend/public/${file}`);
+    const filePath = path.join(__dirname, `frontend/public/${file}`);
     console.log(__dirname)
     console.log(filePath)
-    res.download(filePath, file);*/
+    res.download(filePath, file);
+  } else {*/
+  if (file === "/sample.pdf") {
+    // Check if it's the dummy file
+    res.status(404).json({ error: "Sorry, no pdf file available now!" });
   } else {
+    // It's an actual file, proceed with download
     const file = document.file;
     const filePath = path.join(__dirname, `${file}`);
     res.download(filePath, file);
   }
+    
+  
+} catch (error) {
+  console.log(error)
+  res.status(404);
+  throw new Error("Something went wrong");
+}
+  
 });
 
 // @desc    Create a document

@@ -102,12 +102,12 @@ const CollectionScreen = () => {
     <Message variant="danger">{error.data.message}</Message>
   ) : (
     <>
-     <Row className="justify-content-center my-3" style={{  textAlign:"start", fontWeight:"700" }}>
-        <Col md={4}>
+     <Row className="justify-content-center my-3 mx-2" style={{  textAlign:"start", fontWeight:"700" }}>
+        <Col sm={8} md={4}>
           <h1 style={{fontWeight:"bold"}}>  {collection.title}</h1>
         </Col>
 
-        <Col md={2}>
+        <Col sm={2} md={2}>
           <Button
             style={{ backgroundColor: "#0b5ed7", border: "#0b5ed7" }}
             className="btn-sm mx-2"

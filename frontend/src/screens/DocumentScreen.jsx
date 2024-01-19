@@ -100,7 +100,6 @@ const DocumentScreen = () => {
           method: "GET",
           responseType: "blob",
         }).then((response) => {
-         console.log(response)
           setLoading(false)
           // Extract filename from Content-Disposition header
          const contentDisposition = response.headers['content-disposition'];
@@ -127,13 +126,20 @@ const DocumentScreen = () => {
       
           // Clean up and remove the link
           link.parentNode.removeChild(link);
+        }).catch((error) => {
+          if (error.response && error.response.status === 404) {
+            setLoading(false)
+            toast.error('Sorry, no PDF file available for download now.');
+          } else {
+            // Handle other errors
+            setLoading(false)
+            toast.error(`An error occurred: ${error.response.data.message || 'Unknown error'}`);
+          }
         });
-    
       } else {
-        toast.error("please sign in to your account to enable downloads.")
+        toast.error("Please sign in to your account to enable downloads.");
       }
-    
-    }
+    };
   const {
     data: collections,
     isLoading: loadingCollections,
@@ -221,13 +227,8 @@ const DocumentScreen = () => {
 
   return (
     <>
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "2rem 5rem",
-          paddingTop: "85px",
-          minHeight:"100vh"
-        }}
+      <div className="document-container"
+       
       >
         <Link className="btn btn-light my-3" to="/exams">
           Go Back
@@ -242,9 +243,9 @@ const DocumentScreen = () => {
         ) : (
           <>
             <Meta title={data.name} />
-            <Row
+            <Row 
               style={{
-                padding: "2rem",
+               marginBottom:"2rem",
                 color: "black",
                 backgroundColor: "white",
               }}
@@ -268,7 +269,7 @@ const DocumentScreen = () => {
                 </Modal.Body>
               </Modal>
 
-              <Col sm={12} md={6} lg={4}>
+              <Col sm={12} md={6} lg={4} className="d-flex justify-content-center align-items-center">
                 <Image
                   src={data.image}
                   alt={data.name}
@@ -417,7 +418,7 @@ const DocumentScreen = () => {
             <Row
               className="review"
               style={{
-                padding: "2rem",
+                
                 color: "black",
                 margin: "auto",
               }}

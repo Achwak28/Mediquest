@@ -92,7 +92,7 @@ const ProductEditScreen = () => {
       toast.success(res.message);
       setPdf(res.file);
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err?.data?.error);
     }
   };
 

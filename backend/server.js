@@ -42,6 +42,8 @@ app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 if (process.env.NODE_ENV === 'production') {
     const __dirname = path.resolve();
     app.use('/uploads', express.static('/var/data/uploads'));
+    app.use('/uploads/images', express.static('/var/data/uploads/images'));
+    app.use('/uploads/pdf', express.static('/var/data/uploads/pdf'));
     app.use(express.static(path.join(__dirname, '/frontend/build')));
   
     app.get('*', (req, res) =>
