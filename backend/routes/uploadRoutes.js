@@ -6,7 +6,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "uploads/images/");
+    cb(null, "uploads/");
   },
 
   filename(req, file, cb) {
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 // Storage configuration for PDFs
 const pdfStorage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "uploads/pdf/");
+    cb(null, "uploads/");
   }, 
   filename(req, file, cb) {
     const currentDate = new Date().toISOString().replace(/:/g, '-')

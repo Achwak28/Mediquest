@@ -32,17 +32,17 @@ app.use("/api/upload", uploadRoutes);
 // set dirname to current directory
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
-app.use(
+/*app.use(
   "/uploads/images",
   express.static(path.join(__dirname, "/uploads/images"))
 );
-app.use("/uploads/pdf", express.static(path.join(__dirname, "/uploads/pdf")));
+app.use("/uploads/pdf", express.static(path.join(__dirname, "/uploads/pdf")));*/
 
 if (process.env.NODE_ENV === "production") {
   const __dirname = path.resolve();
   app.use("/uploads", express.static("/var/data/uploads"));
-  app.use("/uploads/images", express.static("/var/data/uploads/images"));
-  app.use("/uploads/pdf", express.static("/var/data/uploads/pdf"));
+  //app.use("/uploads/images", express.static("/var/data/uploads/images"));
+  //app.use("/uploads/pdf", express.static("/var/data/uploads/pdf"));
   app.use(express.static(path.join(__dirname, "/frontend/build")));
 
   app.get("*", (req, res) =>
