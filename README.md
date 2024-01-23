@@ -17,7 +17,7 @@ To run the MediQuest platform locally, follow the instructions in the `README.md
 Explore our website: [MediQuest](https://mediquest.onrender.com/)
 
 ## Screenshots:
-Include screenshots here to showcase the user interface and features of MediQuest.
+Sreenshots of some pages and features of MediQuest.
 
 ### Home Page
 ![Home Page](screenshots/home_page.PNG)
