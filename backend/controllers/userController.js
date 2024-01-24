@@ -212,7 +212,12 @@ const toFav = asyncHandler(async (req, res) => {
       }).select({ favourites: { $elemMatch: { _id: documentId } } });
 
       if (alreadyAdded.favourites.length !== 0) {
-        document.numLikes = Number(document.numLikes - 1);
+        if( document.numLikes > 0){
+          document.numLikes = Number(document.numLikes - 1);
+        }else{
+          document.numLikes = 0;
+        }
+        
 
         await document.save();
 
